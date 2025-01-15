@@ -2,6 +2,7 @@ package br.gov.caucaia.sme.apps.controle.security;
 
 import java.util.Set;
 
+import br.gov.caucaia.sme.apps.controle.models.Setor;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,6 +35,8 @@ public class Users{
 	private String username;
 	@NotNull
 	private String password;
+	
+	
 	
 	@Singular
 	@ManyToMany(cascade = CascadeType.ALL, fetch =FetchType.EAGER)
