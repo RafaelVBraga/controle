@@ -33,8 +33,7 @@ public class MainController {
 		}
 		
 		@PostMapping("/documento/salvar")
-		public String salvarDocumento(Model model, @ModelAttribute Documento documento) {
-			
+		public String salvarDocumento(Model model, @ModelAttribute Documento documento) {			
 			System.out.println(documento.toString());
 			return "home.xhtml";
 		}
