@@ -18,13 +18,13 @@
 		<div
 			class="col w-50 h-100  d-flex  justify-content-center align-items-center"
 			style="background-color: #000000">
-			<img class="img-container " th:src="@{/img/background.png}" width="264"
-				height="264">
+			<img class="img-container" th:src="@{/img/logo_caucaia.png}" width="260"
+				height="120">
 		</div>
 		<div
 			class="col w-50 h-100 d-flex justify-content-center  bg-light align-items-center">
 			<div class="row w-100 ">
-				<div class="row justify-content-center mb-4 ">SME Setor de TI</div>
+				<div class="row justify-content-center mb-4 ">SME Controle Interno</div>
 
 				<form class="form-floating form-control" th:action="@{/login}"
 					method="POST">
@@ -33,14 +33,7 @@
 						<label class="form-label m-auto"> Usuário:</label> <input
 							class="form-control m-auto" type="text" name="username"><label
 							class="form-label m-auto"> Senha:</label> <input id="password"
-							class="form-control m-auto" type="password" name="password">
-						<button th:onclick="toggle()" type="button"
-							class="eye-button position-absolute">
-							<img id="eye_slash_image" style="display: none"
-								th:src="@{/img/eye-slash.svg}" alt="eye-slash" width="16"
-								height="16"><img id="eye_image" th:src="@{/img/eye.svg}"
-								alt="eye" width="16" height="16">
-						</button>
+							class="form-control m-auto" type="password" name="password">						
 					</div>
 					<div class="container row m-auto">
 						<input class="btn btn-dark mt-4 mb-4" type="submit" value="Login">
@@ -62,22 +55,8 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
-		<style>
-.image-container img {
-	position: relative;
-	width: 100%;
-}
+		
 
-.image-container:before {
-	content: "";
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: linear-gradient(to right, transparent 0%, white 50%, transparent 100%);
-	pointer-events: none;
-}
-</style>
+
 </body>
 </html>

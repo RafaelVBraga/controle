@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +36,12 @@ public class Users{
 	private String username;
 	@NotNull
 	private String password;
+	@NotNull
+	private String nome;
+	@NotNull
+	private String matricula;
+	@OneToOne
+	private Setor setor;
 	
 	
 	

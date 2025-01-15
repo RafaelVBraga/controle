@@ -3,6 +3,7 @@ package br.gov.caucaia.sme.apps.controle.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
 	
-	@Autowired
+	@Autowired@Lazy
 	UserDetailsService myUserDetailsService;
 	
 	@Bean
@@ -25,10 +26,12 @@ public class SecurityConfiguration {
 				authConfig.requestMatchers(HttpMethod.GET,"/css/**").permitAll();				
 				authConfig.requestMatchers(HttpMethod.GET,"/js/**").permitAll();
 				authConfig.requestMatchers(HttpMethod.GET,"/img/**").permitAll();
-				authConfig.requestMatchers(HttpMethod.GET,"/controle/dev/**").permitAll();
-				authConfig.requestMatchers(HttpMethod.POST,"/controle/dev/**").permitAll();
-				authConfig.requestMatchers(HttpMethod.GET,"/controle/usuario/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");						
-				authConfig.requestMatchers(HttpMethod.GET,"controle/gerencial").hasRole("ADMIN");				
+				authConfig.requestMatchers(HttpMethod.GET,"/home/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
+				authConfig.requestMatchers(HttpMethod.GET,"/documento/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
+				authConfig.requestMatchers(HttpMethod.POST,"/documento/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
+				authConfig.requestMatchers(HttpMethod.GET,"/setor/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
+				authConfig.requestMatchers(HttpMethod.POST,"/setor/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
+						
 				authConfig.anyRequest().authenticated(); 
 			})
 			.csrf(csrf -> csrf.disable())
@@ -37,9 +40,9 @@ public class SecurityConfiguration {
 				formLogin
 				.usernameParameter("username")
 				.passwordParameter("password")
-					.loginPage("/sigec/login")		//onde carregar a página de login
-					.loginProcessingUrl("/sigec/login") //qual o caminho está setado na página no método post
-					.defaultSuccessUrl("/sigec/home",true)
+					.loginPage("/login")		//onde carregar a página de login
+					.loginProcessingUrl("/login") //qual o caminho está setado na página no método post
+					.defaultSuccessUrl("/home",true)
 					.permitAll();
 			})
 //			.formLogin(Customizer.withDefaults())

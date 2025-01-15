@@ -3,26 +3,26 @@ package br.gov.caucaia.sme.apps.controle.models;
 import java.io.Serializable;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
+import br.gov.caucaia.sme.apps.controle.security.Users;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
-
 @Data@Entity
-public class Setor implements Serializable{
+public class Usuario implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Id@GeneratedValue(strategy = GenerationType.UUID) 
+	@Id@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
-	@NotBlank@Column(unique = true)
 	private String nome;
-	private Integer ano;
-	private Integer numero;
+	private String matricula;
+	private Setor setor;
+	@OneToOne
+	private Users seguranca;
 
 }

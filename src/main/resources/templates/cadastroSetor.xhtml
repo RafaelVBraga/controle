@@ -26,7 +26,8 @@ body {
 		flex-direction: column;
 	}
 }
-.bg-azul-claro{
+
+.bg-azul-claro {
 	background: #E7E6FE;
 }
 </style>
@@ -40,49 +41,36 @@ body {
 		class="d-flex flex-column justify-content-center align-items-center vh-100 w-100">
 		<h1 class="text-primary m-5 shadow-sm">Controle Interno - Setor
 			TI</h1>
-		<form class="bg-azul-claro p-4 rounded" th:action="@{/documento/salvar}" th:object="${documento}"
-			method="post">
+		<div class="d-flex flex-column justify-content-center align-items-center w-100"> 
+			<span th:if="${error}!=null" class="text-danger"
+							th:text="${error}">Campo necessário</span> 
+		</div>
+		<form class="bg-azul-claro p-4 rounded" th:action="@{/setor/salvar}"
+			th:object="${setor}" method="post">
 			<div
-				class="d-flex flex-column justify-content-between align-items-center gap-4">
+				class="d-flex flex-column justify-content-between align-items-center gap-5">
 				<div class="d-flex justify-content-between w-100">
+					<div class="form-group" hidden="hidden">
+						<input type="text" id="id" th:field="*{id}" class="form-control">
+					</div>
 					<div class="form-group ">
-						<label for="data">Data</label> <input type="date" id="data"
-							th:field="*{data}" class="form-control">
+						
+							<label for="nome">Nome</label>
+						<input type="text" id="nome" th:field="*{nome}"
+							class="form-control">
 					</div>
 
-					<div class="form-group">
-						<label for="numero">Número</label> <input type="number"
-							id="numero" th:field="*{numero}" class="form-control">
-					</div>
-				</div>
-				
-								<!-- ----------------- -->
-				<div class="d-flex justify-content-between gap-2 w-100 ">
 					<div class="form-group">
 						<label for="ano">Ano</label> <input type="number" id="ano"
 							th:field="*{ano}" class="form-control">
 					</div>
-					<div class="form-group">
-						<label for="criador">Criador</label> <input type="text"
-							id="criador" th:field="*{criador}" class="form-control">
-					</div>
-				</div>
-							<!-- ----------------- -->
-
-				<div class="form-group w-100 h-100">
-					<label for="conteudo">Conteúdo</label>
-					<textarea id="conteudo" th:field="*{conteudo}" class="form-control"></textarea>
 				</div>
 
-				<div class="form-group">
-					<label for="tipo">Tipo</label> <select id="tipo" th:field="*{tipo}"
-						class="form-control">
-						<option value="false">CI</option>
-						<option value="true">Ofício</option>
-					</select>
+				<div class="d-flex justify-content-between gap-2">
+					<button type="submit" class="btn btn-primary">Salvar</button>
+					<a class="btn btn-primary" th:href="@{/home}">Voltar</a>
 				</div>
-				<button type="submit" class="btn btn-primary">Salvar</button>
-				<a class="btn btn-primary" th:href="@{/home}">Voltar</a>
+
 			</div>
 		</form>
 	</div>
