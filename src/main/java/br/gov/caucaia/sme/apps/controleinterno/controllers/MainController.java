@@ -1,4 +1,4 @@
-package br.gov.caucaia.sme.apps.controle.controllers;
+package br.gov.caucaia.sme.apps.controleinterno.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import br.gov.caucaia.sme.apps.controle.models.Documento;
-import br.gov.caucaia.sme.apps.controle.models.Setor;
-import br.gov.caucaia.sme.apps.controle.security.Users;
-import br.gov.caucaia.sme.apps.controle.service.SetorService;
+import br.gov.caucaia.sme.apps.controleinterno.models.Documento;
+import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
+import br.gov.caucaia.sme.apps.controleinterno.security.Users;
+import br.gov.caucaia.sme.apps.controleinterno.service.SetorService;
 
 @Controller
 public class MainController {

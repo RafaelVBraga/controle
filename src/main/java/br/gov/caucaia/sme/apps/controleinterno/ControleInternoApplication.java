@@ -1,4 +1,4 @@
-package br.gov.caucaia.sme.apps.controle;
+package br.gov.caucaia.sme.apps.controleinterno;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

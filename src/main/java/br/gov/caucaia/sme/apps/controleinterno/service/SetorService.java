@@ -1,4 +1,4 @@
-package br.gov.caucaia.sme.apps.controle.service;
+package br.gov.caucaia.sme.apps.controleinterno.service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -7,10 +7,10 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.gov.caucaia.sme.apps.controle.models.Setor;
-import br.gov.caucaia.sme.apps.controle.models.SetorHistorico;
-import br.gov.caucaia.sme.apps.controle.repository.SetorHistoricoRepository;
-import br.gov.caucaia.sme.apps.controle.repository.SetorRepository;
+import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
+import br.gov.caucaia.sme.apps.controleinterno.models.SetorHistorico;
+import br.gov.caucaia.sme.apps.controleinterno.repository.SetorHistoricoRepository;
+import br.gov.caucaia.sme.apps.controleinterno.repository.SetorRepository;
 
 @Service
 public class SetorService {

@@ -1,4 +1,4 @@
-package br.gov.caucaia.sme.apps.controle;
+package br.gov.caucaia.sme.apps.controleinterno;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

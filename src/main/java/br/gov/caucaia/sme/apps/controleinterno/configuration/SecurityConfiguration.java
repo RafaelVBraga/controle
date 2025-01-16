@@ -1,9 +1,8 @@
-package br.gov.caucaia.sme.apps.controle.configuration;
+package br.gov.caucaia.sme.apps.controleinterno.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
 	
-	@Autowired@Lazy
+	@Autowired
 	UserDetailsService myUserDetailsService;
 	
 	@Bean
@@ -30,8 +29,7 @@ public class SecurityConfiguration {
 				authConfig.requestMatchers(HttpMethod.GET,"/documento/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
 				authConfig.requestMatchers(HttpMethod.POST,"/documento/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
 				authConfig.requestMatchers(HttpMethod.GET,"/setor/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
-				authConfig.requestMatchers(HttpMethod.POST,"/setor/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
-						
+				authConfig.requestMatchers(HttpMethod.POST,"/setor/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");						
 				authConfig.anyRequest().authenticated(); 
 			})
 			.csrf(csrf -> csrf.disable())

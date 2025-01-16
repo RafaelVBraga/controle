@@ -1,8 +1,8 @@
-package br.gov.caucaia.sme.apps.controle.security;
+package br.gov.caucaia.sme.apps.controleinterno.security;
 
 import java.util.Set;
 
-import br.gov.caucaia.sme.apps.controle.models.Setor;
+import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

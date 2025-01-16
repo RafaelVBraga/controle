@@ -1,4 +1,4 @@
-package br.gov.caucaia.sme.apps.controle.security;
+package br.gov.caucaia.sme.apps.controleinterno.security;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
