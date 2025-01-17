@@ -47,8 +47,8 @@ body {
 				class="d-flex flex-column justify-content-between align-items-center gap-4">
 				<div class="d-flex justify-content-between w-100">
 					<div class="form-group ">
-						<label for="data">Data: </label> <input type="date" id="data"
-							th:field="*{data}" th:value="${dataFormatada)" class="form-control" disabled="disabled">
+						<label for="data">Data: </label> <input type="text" id="data"
+							th:field="*{data}" th:value="${dataFormatada}" class="form-control" disabled="disabled" >
 					</div>
 
 					<div class="form-group">
@@ -73,7 +73,7 @@ body {
 					</div>
 					<div class="form-group">
 						<label for="criador">Criador</label> <input type="text" disabled="disabled"
-							id="criador" th:field="*{criador.username}" class="form-control">
+							id="criador" th:field="*{criador.nome}" class="form-control">
 					</div>
 					<div class="form-group">
 						<label class="form-label">Destino <span
@@ -98,7 +98,7 @@ body {
 				
 				<div class="d-flex justify-content-between gap-2 w-100 ">
 					<button type="submit" class="btn btn-primary">Salvar</button>
-					<a class="btn btn-primary" th:href="@{/home}">Voltar</a>
+					<a class="btn btn-primary" th:href="@{/documento}">Voltar</a>
 				</div>
 
 			</div>
