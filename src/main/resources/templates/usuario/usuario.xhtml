@@ -26,6 +26,10 @@ body {
 		flex-direction: column;
 	}
 }
+
+.bg-azul-claro {
+	background: #E7E6FE;
+}
 </style>
 <title>Controle Interno</title>
 
@@ -33,18 +37,10 @@ body {
 
 
 <body>
-	<div
-		class="d-flex flex-column justify-content-center align-items-center p-5">
-		<h1 class="text-primary m-5 shadow-sm">Controle Interno - Setor
-			TI</h1>
-		<div
-			class="d-flex border border-primary w-50 rounded shadow-lg m-5 justify-content-between align-items-center flex-column-when-small ">
-
-			<a th:href="@{/documento/cadastro}" class="btn btn-primary m-5">Gerar Documento</a> 
-			<a th:href="@{/documento/pesquisar}" class="btn btn-primary m-5">Pesquisar Documento</a>
-			<a th:href="@{/setor/cadastro}" class="btn btn-primary m-5">Cadastrar Setor</a> 
-
-		</div>
+	<div th:insert="~{fragments/components.xhtml :: navbar}">
+	</div>
+	<div class="d-flex justify-content-center">
+	<h1>Usuários</h1>
 	</div>
 
 </body>

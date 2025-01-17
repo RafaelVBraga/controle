@@ -1,5 +1,9 @@
 package br.gov.caucaia.sme.apps.controleinterno.controllers;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import br.gov.caucaia.sme.apps.controleinterno.models.Documento;
 import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
 import br.gov.caucaia.sme.apps.controleinterno.security.Users;
+import br.gov.caucaia.sme.apps.controleinterno.service.DocumentoService;
+import br.gov.caucaia.sme.apps.controleinterno.service.SecretariaService;
 import br.gov.caucaia.sme.apps.controleinterno.service.SetorService;
 import br.gov.caucaia.sme.apps.controleinterno.service.UsersService;
 
@@ -22,47 +28,76 @@ import br.gov.caucaia.sme.apps.controleinterno.service.UsersService;
 public class MainController {
 	@Autowired
 	private SetorService setorService;
+	
 	@Autowired
 	private UsersService usersService;
-
+	
+	@Autowired
+	private DocumentoService documentoService;
+	
+	@Autowired
+	private SecretariaService secretariaService;
+	
 	@GetMapping("/login")
 	public String login(Model model) {
-		return "login.xhtml";
+		return "/util/login.xhtml";
 	}
 
 	@GetMapping("/home")
 	public String home(Model model) {
-		return "home.xhtml";
+		return "/util/home.xhtml";
+	}
+	@GetMapping("/usuario")
+	public String usuarios(Model model) {
+		return "/usuario/usuario.xhtml";
+	}
+	@GetMapping("/documento")
+	public String documentos(Model model) {
+		model.addAttribute("documentos",documentoService.findDocBySetor(buscarUsuario().getSetor()));
+		return "/documento/documento.xhtml";
+	}
+	@GetMapping("/setor")
+	public String setores(Model model) {
+		model.addAttribute("setores",setorService.findAll());		
+		return "/documento/documento.xhtml";
 	}
 
 	@GetMapping("/documento/cadastro")
 	public String cadastroDocumento(Model model) {
-		Documento documento = new Documento();
+		Documento documento = new Documento();		
 		Users user = buscarUsuario();
-		Setor setor = setorService.findById(user.getSetor().getId());
-		model.addAttribute("numero", setorService.pegarNumero(setor.getId()));
+		documento.setCriador(user);
+		documento.setAno(LocalDate.now().getYear());
+		documento.setData(LocalDate.now());
+		documento.setSetor(user.getSetor());
+		System.out.println(documento.getData());
 		model.addAttribute("documento", documento);
-		return "cadastroDocumento.xhtml";
+		model.addAttribute("setores",setorService.findAll());
+		model.addAttribute("secretarias", secretariaService.findAll());
+		model.addAttribute("dataFormatada", DateTimeFormatter.ofPattern("yyyy-MM-dd").format(documento.getData()));
+		return "/documento/cadastroDocumento.xhtml";
 	}
 
 	@PostMapping("/documento/salvar")
 	public String salvarDocumento(Model model, @ModelAttribute Documento documento) {
-		System.out.println(documento.toString());
-		return "home.xhtml";
+		
+		documento.setNumero(setorService.pegarNumero(documento.getSetor().getId()));
+		documentoService.save(documento);
+		return "/documento/documento.xhtml";
 	}
 
 	@GetMapping("/setor/cadastro")
 	public String cadastroSetor(Model model) {
 		Setor setor = new Setor();
 		model.addAttribute("setor", setor);
-		return "cadastroSetor.xhtml";
+		return "/setor/cadastroSetor.xhtml";
 	}
 
 	@PostMapping("/setor/salvar")
 	public String salvarSetor(Model model, @Validated @ModelAttribute Setor setor, Errors errors) {
 		if (errors.hasErrors()) {
 			model.addAttribute("setor", setor);
-			return "cadastroSetor.xhtml";
+			return "/setor/cadastroSetor.xhtml";
 		}
 		setor.setNumero(1);
 		System.out.println(setor.toString());
@@ -71,11 +106,11 @@ public class MainController {
 		} catch (Exception e) {
 			model.addAttribute("error", e.getMessage());
 			model.addAttribute("setor", setor);
-			return "cadastroSetor.xhtml";
+			return "/setor/cadastroSetor.xhtml";
 
 		}
 
-		return "home.xhtml";
+		return "/util/home.xhtml";
 	}
 
 	private Users buscarUsuario() {

@@ -14,49 +14,47 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-	
+
 	@Autowired
 	UserDetailsService myUserDetailsService;
-	
+
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http
-			.authorizeHttpRequests(authConfig ->{				
-				authConfig.requestMatchers(HttpMethod.GET,"/css/**").permitAll();				
-				authConfig.requestMatchers(HttpMethod.GET,"/js/**").permitAll();
-				authConfig.requestMatchers(HttpMethod.GET,"/img/**").permitAll();
-				authConfig.requestMatchers(HttpMethod.GET,"/home/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
-				authConfig.requestMatchers(HttpMethod.GET,"/documento/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
-				authConfig.requestMatchers(HttpMethod.POST,"/documento/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
-				authConfig.requestMatchers(HttpMethod.GET,"/setor/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");
-				authConfig.requestMatchers(HttpMethod.POST,"/setor/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN","ROLE_DEVELOPER");						
-				authConfig.anyRequest().authenticated(); 
-			})
-			.csrf(csrf -> csrf.disable())
-			.userDetailsService(myUserDetailsService)
-			.formLogin(formLogin ->{ 
-				formLogin
-				.usernameParameter("username")
-				.passwordParameter("password")
-					.loginPage("/login")		//onde carregar a página de login
-					.loginProcessingUrl("/login") //qual o caminho está setado na página no método post
-					.defaultSuccessUrl("/home",true)
-					.permitAll();
-			})
-//			.formLogin(Customizer.withDefaults())
-			
-			.httpBasic(Customizer.withDefaults());
-			
-			return http.build();
-		
-	}
-	
+		http.authorizeHttpRequests(authConfig -> {
+			authConfig.requestMatchers(HttpMethod.GET, "/css/**").permitAll();
+			authConfig.requestMatchers(HttpMethod.GET, "/js/**").permitAll();
+			authConfig.requestMatchers(HttpMethod.GET, "/img/**").permitAll();
+			authConfig.requestMatchers(HttpMethod.GET, "/util/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+					"ROLE_DEVELOPER");
+			authConfig.requestMatchers(HttpMethod.GET, "/documento/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+					"ROLE_DEVELOPER");
+			authConfig.requestMatchers(HttpMethod.POST, "/documento/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+					"ROLE_DEVELOPER");
+			authConfig.requestMatchers(HttpMethod.GET, "/setor/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+					"ROLE_DEVELOPER");
+			authConfig.requestMatchers(HttpMethod.POST, "/setor/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+					"ROLE_DEVELOPER");
+			authConfig.anyRequest().authenticated();
+		}).csrf(csrf -> csrf.disable()).userDetailsService(myUserDetailsService).formLogin(formLogin -> {
+			formLogin.usernameParameter("username").passwordParameter("password").loginPage("/login") // onde carregar a
+																										// página de
+																										// login
+					.loginProcessingUrl("/login") // qual o caminho está setado na página no método post
+					.defaultSuccessUrl("/home", true).permitAll();
 
-	
+		}).logout(logout -> {
+			logout.logoutUrl("/logout").logoutSuccessUrl("/login?logout").permitAll();
+		})
+
+				.httpBasic(Customizer.withDefaults());
+
+		return http.build();
+
+	}
+
 	@Bean
 	BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
 
 }

@@ -39,6 +39,8 @@ public class SetorService {
 		Setor setor = setorRepo.findById(id).get();
 
 		if (setor.getAno() < dataAtual.getYear()) {
+			//Como a numeração é sequencial, a cada ano ela é zerada, 
+			//então fica registrado o histórico do setor para o ano anterior
 			SetorHistorico setorHistorico = new SetorHistorico();
 			setorHistorico.setAno(setor.getAno());
 			setorHistorico.setNome(setor.getNome());

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+	<div th:fragment="navbar">
+		<nav class="navbar navbar-expand-lg sticky-top bg-dark d-flex justify-content-between px-3">
+			<img class="navbar-brand" th:src="@{img/logo_caucaia.png}"
+				width="140" height="75">
+			<div class="d-flex gap-4 px-3">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">					
+					<li class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/setor}">Documento</a> 
+					<li class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/setor}">Setor</a> 
+					<li class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/usuario}">Usuario</a>
+					<li class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/setor}">Gerencial</a>
+					<li class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/logout}">Sair</a></ul>
+			</div>
+		</nav>
+
+	</div>
+</body>
+</html>
