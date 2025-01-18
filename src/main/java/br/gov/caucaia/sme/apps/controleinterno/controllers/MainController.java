@@ -74,8 +74,8 @@ public class MainController {
 		model.addAttribute("documento", documento);
 		model.addAttribute("setores",setorService.findAll());
 		model.addAttribute("secretarias", secretariaService.findAll());
-		model.addAttribute("setor", user.getSetor().getNome());
-		model.addAttribute("dataFormatada", DateTimeFormatter.ofPattern("yyyy/MM/dd").format(documento.getData()));
+		model.addAttribute("setorNome", user.getSetor().getNome());
+		model.addAttribute("dataFormatada", DateTimeFormatter.ofPattern("dd/MM/yyyy").format(documento.getData()));
 		return "/documento/cadastroDocumento.xhtml";
 	}
 
