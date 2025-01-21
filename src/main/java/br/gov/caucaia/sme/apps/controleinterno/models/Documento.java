@@ -27,6 +27,7 @@ public class Documento implements Serializable{
 	private Integer numero;
 	private Integer anoCadastro;
 	private String conteudo;
+	private String assunto;
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Users criador;
 	private Boolean tipoDocumento;

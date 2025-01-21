@@ -13,6 +13,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -116,7 +117,7 @@ public class MainController {
 
 		XWPFDocument document;
 		try {
-			FileInputStream fis = new FileInputStream("C:\\Users\\rafae\\Documents\\Docs\\template2.docx");
+			FileInputStream fis = new FileInputStream("C:\\Users\\rafae\\Documents\\Docs\\templateOficio.docx");
 			document = new XWPFDocument(OPCPackage.open(fis));
 			// Abre o documento .docx
 			//document = new XWPFDocument(OPCPackage.open("C:\\Users\\rafae\\Documents\\Docs\\template2.docx"));
@@ -130,25 +131,39 @@ public class MainController {
 				Object valor = entry.getValue();
 				System.out.println("Buscando: " + chave + ",para colocar: " + valor);
 				for (XWPFParagraph paragraph : paragraphs) {
+//					for (XWPFRun run : paragraph.getRuns()) { 
+//						String text = run.getText(0); 
+//						System.out.println(text);
+//						if (text != null && text.contains(chave)) { 
+//							text = text.replace("<"+chave+">", valor.toString()); 
+//							run.setText(text, 0); }
+//					}//teste
 					String paragraphText = paragraph.getText();
 					System.out.println("Original:"+paragraphText);
 					if (paragraph.getText().contains(chave)) { 
 						String updatedText = paragraphText.replace("<"+chave+">", valor.toString());
 						System.out.println("atualizado :"+updatedText);
 						// Substitui o texto do parágrafo 
-						paragraph.getRuns().forEach(run -> run.setText("", 0));  
+						
+						paragraph.getRuns().forEach(run -> {
+															System.out.println("run :"+run.text());
+															
+															run.setText("",0);
+													});  
+						System.out.println("running:"+paragraph.getText());
+						int count=0;
+						count = paragraph.getRuns().size();
+						for(int i=0;i < count;i++) paragraph.removeRun(i);
 						paragraph.createRun().setText(updatedText,0); 
+						
 						System.out.println("final:"+paragraph.getText());
 						
 						}
 					}
-				}
-			
-
-			
+				}			
 			 FileOutputStream out = new
 			 FileOutputStream("C:\\Users\\rafae\\Documents\\Docs\\saida\\"+doc.getSetorNome()+"-"+doc.getNumero()+"-"+doc.getAnoCadastro()+".docx");
-			 document.write(out);
+			 document.write(out); 
 			 out.close();
 			 document.close();
 			 fis.close();

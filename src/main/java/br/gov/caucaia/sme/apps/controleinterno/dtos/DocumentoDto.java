@@ -25,6 +25,7 @@ public class DocumentoDto implements Serializable {
 	private Integer numero;
 	private Integer anoCadastro;
 	private String conteudo;
+	private String assunto;
 
 	private Long criadorId;
 	private String criadorNome;
@@ -42,6 +43,7 @@ public class DocumentoDto implements Serializable {
 		doc.setNumero(this.numero);
 		doc.setAnoCadastro(this.anoCadastro);
 		doc.setConteudo(this.conteudo);
+		doc.setAssunto(this.assunto);
 		Users user = new Users();
 		user.setId(this.criadorId);
 		user.setNome(this.criadorNome);
@@ -69,6 +71,8 @@ public class DocumentoDto implements Serializable {
 			docDto.setAnoCadastro(doc.getAnoCadastro());
 		if (doc.getConteudo() != null)
 			docDto.setConteudo(doc.getConteudo());
+		if (doc.getAssunto() != null)
+			docDto.setAssunto(doc.getAssunto());
 		if (doc.getCriador() != null)
 			docDto.setCriadorId(doc.getCriador().getId());
 		if (doc.getCriador() != null)
