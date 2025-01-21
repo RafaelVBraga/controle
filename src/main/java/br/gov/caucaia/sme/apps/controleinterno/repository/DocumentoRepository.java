@@ -15,7 +15,7 @@ public interface DocumentoRepository extends JpaRepository<Documento, UUID>{
 	
 	List<Documento>findBySetor(Setor setor);
 
-	List<Documento> findBySetorAndAno(Setor setor, Integer ano);
+	List<Documento> findBySetorAndAnoCadastro(Setor setor, Integer anoCadastro);
 	
 	List<Documento> findByCriador(Users user);
 	

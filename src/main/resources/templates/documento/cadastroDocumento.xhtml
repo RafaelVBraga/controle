@@ -8,6 +8,7 @@
 	rel="stylesheet"
 	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 	crossorigin="anonymous">
+
 <style>
 body {
 	min-height: 100vh;
@@ -39,10 +40,10 @@ body {
 <body>
 	<div
 		class="d-flex flex-column justify-content-center align-items-center vh-100 w-100">
-		<h1 class="text-primary m-5 shadow-sm">
+		<h1 class=" m-5 shadow-sm">
 			Controle Interno - <span th:unless="${setorNome} != null"
-				th:text="${setorNome}">Setor Padrão</span><span th:if="${setorNome} != null"
-				th:text="${setorNome}"></span>
+				th:text="${setorNome}">Setor Padrão</span><span
+				th:if="${setorNome} != null" th:text="${setorNome}"></span>
 		</h1>
 		<form class="bg-azul-claro p-4 rounded"
 			th:action="@{/documento/salvar}" th:object="${documento}"
@@ -50,70 +51,64 @@ body {
 			<div
 				class="d-flex flex-column justify-content-between align-items-center gap-4">
 				<div class="d-flex justify-content-between w-100">
-					<input type="text" id="idDocumento" th:field="*{id}" hidden="hidden">
-					
-					<div class="form-group ">
-						<label for="data">Data: </label>
-						 <input type="hidden" 
-							th:field="*{data}" th:value="*{data}" />
-							<input id="data" class="form-control" type ="text" th:text="${dataFormatada}">
-					</div>
-
-					<div class="form-group">
-						<label for="numero">Número</label> <input type="number"
-							disabled="disabled" id="numero" th:field="*{numero}"
-							th:value="${numero}" class="form-control">
-					</div>
-					
-					<div class="form-group">
-						<input hidden="hidden" th:field="*{setor.id}" th:value="*{setor.id}">
-						<label for="setor">Setor</label> <input type="text" disabled="disabled"
-							id="setor" th:field="*{setor.nome}" th:value="*{setor.nome}"
-							class="form-control">
-					</div>
-					<div class="form-group">
-						<label for="tipo">Tipo</label> <select id="tipo"
-							th:field="*{tipo}" class="form-select"
-							onchange="mudarTipoDestino()">
-							<option value="false">CI</option>
-							<option value="true">Ofício</option>
-						</select>
+					<input type="text" id="idDocumento" th:field="*{id}"
+						hidden="hidden"><input hidden="hidden"
+						th:field="*{setorId}" th:value="*{setorId}"><input
+						hidden="hidden" type="checkbox" th:field="*{tipoDocumento}"
+						readonly>
+					<div class="d-flex form-group justify-content-between w-100 gap-5">
+						<div>
+							<label><strong>Data:</strong> <input readonly type="text"
+								th:field="*{dataCadastro}" th:value="*{dataCadastro}"
+								class="form-control" /> </label>
+						</div>
+						<div>
+							<label><strong>Documento:</strong> <span
+								th:field="*{tipoDocumento}"
+								th:text="*{tipoDocumento} ? 'Ofício' : 'Comunicação Interna'"
+								class="form-control"></span> </label>
+						</div>
+						<div>
+							<label><strong>Setor:</strong> </label> <input type="text"
+								th:field="*{setorNome}" readonly th:value="*{setorNome}"
+								class="form-control">
+						</div>
 					</div>
 				</div>
 
 
 				<!-- ----------------- -->
-				<div class="d-flex justify-content-between gap-2 w-100 ">
-					<div class="form-group">
-						<label for="ano">Ano</label> <input type="number"
-							disabled="disabled" id="ano" th:field="*{ano}"
-							class="form-control">
-					</div>
-					<div class="form-group">
-						<label for="criador">Criador</label> <input type="text"
-							disabled="disabled" id="criador" th:field="*{criador.nome}"
-							class="form-control">
-					</div>
-					<div class="form-group">
-						<label>Destino <span th:if="${#arrays.isEmpty(setores)}">Sem
-								informações</span></label> <select class="form-select" id="select_set"
-							th:field="*{destino}" th:value="*{destino}"
-							th:unless="${#arrays.isEmpty(setores)}"
-							th:classappend="${#fields.hasErrors('setor')}?'border border-danger':''">
-							<option value="n/a">- Selecione um setor-</option>
-							<option th:each="setr,stat: ${setores}" th:value="${setr.nome}"
-								th:text="${setr.nome}">
-						</select>
+				<div class="d-flex justify-content-between w-100 ">
+					<div
+						class="form-group d-flex flex-row justify-content-betwwen w-100 gap-5">
+						<div>
+							<label for="numero"><strong>Número</strong> </label> <input
+								type="text" readonly id="numero" th:field="*{numero}"
+								th:value="*{numero}" class="form-control">
+						</div>
+						<div>
+							<label for="ano"><strong>Ano</strong> </label> <input
+								type="text" readonly id="ano" th:field="*{anoCadastro}"
+								th:value="*{anoCadastro}" class="form-control">
+						</div>
+						<div class="form-group">
+							<label><strong>Destino</strong> </label> <input readonly
+								class="form-control" th:if="${#arrays.isEmpty(setores)}"
+								value="Sem informações"><select class="form-select"
+								id="select_set" th:field="*{destino}"
+								th:unless="${#arrays.isEmpty(setores)}"
+								th:classappend="${#fields.hasErrors('destino')}?'border border-danger':''">
+								<option th:each="setr,stat: ${setores}" th:value="${setr.nome}"
+									th:text="${setr.nome}"></option>
+							</select>
+						</div>
 					</div>
 				</div>
-				<!-- ----------------- -->
 
 				<div class="form-group w-100 h-100">
-					<label for="conteudo">Conteúdo</label>
+					<label for="conteudo"><strong>Conteúdo:</strong></label>
 					<textarea id="conteudo" th:field="*{conteudo}" class="form-control"></textarea>
 				</div>
-
-
 
 				<div class="d-flex justify-content-between gap-2 w-100 ">
 					<button type="submit" class="btn btn-primary">Salvar</button>
@@ -125,10 +120,6 @@ body {
 	</div>
 
 </body>
-<script>
-	function mudarTipoDestino() {
-		const tipoDocumento = /*[[${documento.tipo}]]*/'default';
-		alert(tipoDocumento);
-	}
-</script>
+
+
 </html>
