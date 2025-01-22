@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.gov.caucaia.sme.apps.controleinterno.dtos.DocumentoDto;
+import br.gov.caucaia.sme.apps.controleinterno.dtos.UsuarioDto;
 import br.gov.caucaia.sme.apps.controleinterno.models.Documento;
 import br.gov.caucaia.sme.apps.controleinterno.models.Secretaria;
 import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
@@ -43,6 +45,7 @@ public class MainController {
 
 	@Autowired
 	private UsersService usersService;
+	
 
 	@Autowired
 	private DocumentoService documentoService;
@@ -265,9 +268,12 @@ public class MainController {
 
 		return externos(model);
 	}
-	@GetMapping("/usuario/cadastro")
+	@GetMapping("/usuario/cadastro") 
 	public String cadastroUsuario(Model model) {
-		Users usuario = new Users();
+		Users user = buscarUsuario();
+		
+		UsuarioDto usuario = new UsuarioDto();
+		model.addAttribute("setor", user.getSetor().getNome());
 		model.addAttribute("setores",setorService.findAll()); 
 		model.addAttribute("usuario", usuario);
 		
@@ -276,20 +282,25 @@ public class MainController {
 	@GetMapping("/usuario/editar")
 	public String editaroUsuario(Model model,@RequestParam Long userId) {
 		Users usuario = usersService.findById(userId);
+		UsuarioDto usuarioDto = UsuarioDto.fromUsers(usuario);
 		model.addAttribute("setores",setorService.findAll());	
-		model.addAttribute("usuario", usuario);
+		model.addAttribute("usuario", usuarioDto);
 		
 		return "/usuario/cadastroUsuario.xhtml";
 	}
 	@PostMapping("/usuario/salvar")
-	public String salvarUsuario(Model model, @Validated @ModelAttribute Users usuario, Errors errors) {
+	public String salvarUsuario(Model model, @Validated @ModelAttribute UsuarioDto usuario, Errors errors) {
 		if (errors.hasErrors()) {
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
 		}
-		
-		try {
-			usersService.save(usuario);
+		Users user = usuario.toUsers();
+		BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+		user.setPassword(bcrypt.encode("senha123"));
+		Setor setor = setorService.findById(usuario.getSetorId());		
+		user.setSetor(setor);
+		try {			
+			usersService.save(user);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			model.addAttribute("error", e.getMessage());
