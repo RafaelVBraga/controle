@@ -39,8 +39,50 @@ body {
 <body>
 	<div th:insert="~{fragments/components.xhtml :: navbar}">
 	</div>
-	<div class="d-flex justify-content-center">
-	<h1>Usuários</h1>
+	<div class="d-flex justify-content-between shadow">
+		
+		<div>
+			<form class="form-group h-100 d-flex justify-content-start align-items-center gap-2 p-2">
+				<label ><strong>Nome</strong><input class="form-control"></label> 
+				<label><strong>Matrícula</strong><input type="date" class="form-control"></label>				
+				<input class="btn btn-primary h-75 mt-3"type="submit"value="Pesquisar">
+			</form>
+		</div>
+		<div class="d-flex justify-content-start align-items-center gap-5">
+				<div>
+					<a class="btn btn-primary"
+						th:href="@{/usuario/cadastro}">Novo Usuário</a>
+				</div>
+				
+			</div>
+
+	</div>
+	<div class="container-fluid h-50">
+			<div th:if="${!#arrays.isEmpty(usuarios)}">
+				<table class="table table-light table-striped rouded-top shadow w-100 h-100">
+				<thead>
+				<tr>
+					<th class="table-light">Nome</th>
+					<th class="table-light">Matrícula</th>
+					<th class="table-light">Setor</th>
+					<th class="table-light">Ações</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="user, iStat :${ usuarios }">
+					<td th:text="${user.nome}"></td>
+					<td th:text="${user.matricula}"></td>
+					<td th:text="${user.setor.nome}"></td>
+					<td>  
+						<a th:href="@{/usuario/editar(userId= ${user.id})}" class="btn btn-primary">Editar</a>
+					</td>
+				</tbody>
+				
+				</table>
+			</div>
+			<div th:unless="${!#arrays.isEmpty(usuarios)}" class="d-flex h-100 justify-content-center align-items-center">
+				<h2>Não há informações</h2>
+			</div>
 	</div>
 
 </body>

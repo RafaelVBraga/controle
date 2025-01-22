@@ -33,7 +33,7 @@ public class SetorService {
 		return setorRepo.save(setor);
 	}
 
-	public Integer pegarNumero(UUID id) {
+	public Integer pegarNumeroSetor(UUID id) {
 		LocalDate dataAtual = LocalDate.now();
 		Integer numeroControle = 0;
 		Setor setor = setorRepo.findById(id).get();
@@ -55,5 +55,10 @@ public class SetorService {
 		setorRepo.save(setor);
 
 		return numeroControle;
+	}
+
+	public Integer pegarNumeroGeral() {
+		
+		return null;
 	}
 }

@@ -22,6 +22,8 @@ public class Secretaria implements Serializable{
 	private UUID id;
 	@NotBlank@Column(unique = true)
 	private String nome;
+	@Column(unique = true)
+	private String sigla;
 	
 
 }

@@ -39,14 +39,13 @@ body {
 <body>
 	<div
 		class="d-flex flex-column justify-content-center align-items-center vh-100 w-100">
-		<h1 class="text-primary m-5 shadow-sm">Controle Interno - Setor
-			TI</h1>
+		<h1 class="text-primary m-5 shadow-sm">Controle Interno - <span th:text="${setor}"></span></h1>
 		<div class="d-flex flex-column justify-content-center align-items-center w-100"> 
 			<span th:if="${error}!=null" class="text-danger"
 							th:text="${error}">Campo necessário</span> 
 		</div>
-		<form class="bg-azul-claro p-4 rounded" th:action="@{/setor/salvar}"
-			th:object="${setor}" method="post">
+		<form class="bg-azul-claro p-4 rounded" th:action="@{/externo/salvar}"
+			th:object="${externo}" method="post">
 			<div
 				class="d-flex flex-column justify-content-between align-items-center gap-5">
 				<div class="d-flex justify-content-between w-100">
@@ -55,21 +54,19 @@ body {
 					</div>
 					<div class="form-group ">
 						
-							<label for="nome">Nome</label>
-							<input type="text" id="nome" th:field="*{nome}"
+						<label for="nome">Nome</label>
+						<input type="text" id="nome" th:field="*{nome}"
 							class="form-control">
-							<input th:field="*{numero}" hidden="hidden">
+							<label for="nome">Sigla</label>
+						<input type="text" id="nome" th:field="*{sigla}"
+							class="form-control">
 					</div>
-
-					<div class="form-group">
-						<label for="ano">Ano</label> <input type="number" id="ano"
-							th:field="*{ano}" class="form-control">
-					</div>
+					
 				</div>
 
 				<div class="d-flex justify-content-between gap-2">
 					<button type="submit" class="btn btn-primary">Salvar</button>
-					<a class="btn btn-primary" th:href="@{/setor}">Voltar</a>
+					<a class="btn btn-primary" th:href="@{/externo}">Voltar</a>
 				</div>
 
 			</div>

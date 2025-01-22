@@ -104,7 +104,10 @@ body {
 						</div>
 					</div>
 				</div>
-
+				<div class="form-group w-100 h-100">
+					<label for="assunto"><strong>Assunto:</strong></label>
+					<input id="assunto" th:field="*{assunto}" class="form-control">
+				</div>
 				<div class="form-group w-100 h-100">
 					<label for="conteudo"><strong>Conteúdo:</strong></label>
 					<textarea id="conteudo" th:field="*{conteudo}" class="form-control"></textarea>

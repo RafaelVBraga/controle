@@ -19,7 +19,10 @@ public class SecretariaService {
 	public List<Secretaria> findAll() {		
 		return secretariaRepo.findAll(Sort.by(Sort.Direction.ASC, "nome"));
 	}
-
+	
+	public Secretaria save(Secretaria externo) {
+		return secretariaRepo.save(externo);
+	}
 	public Secretaria findById(UUID id) {
 		return secretariaRepo.findById(id).get();
 	}

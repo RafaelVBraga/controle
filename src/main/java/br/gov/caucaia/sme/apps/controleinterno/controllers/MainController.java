@@ -13,7 +13,6 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import br.gov.caucaia.sme.apps.controleinterno.dtos.DocumentoDto;
 import br.gov.caucaia.sme.apps.controleinterno.models.Documento;
+import br.gov.caucaia.sme.apps.controleinterno.models.Secretaria;
 import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
 import br.gov.caucaia.sme.apps.controleinterno.security.Users;
 import br.gov.caucaia.sme.apps.controleinterno.service.DocumentoService;
@@ -62,6 +62,7 @@ public class MainController {
 
 	@GetMapping("/usuario")
 	public String usuarios(Model model) {
+		model.addAttribute("usuarios", usersService.list());
 		return "/usuario/usuario.xhtml";
 	}
 
@@ -75,6 +76,12 @@ public class MainController {
 	public String setores(Model model) {
 		model.addAttribute("setores", setorService.findAll());
 		return "/setor/setor.xhtml";
+	}
+
+	@GetMapping("/externo")
+	public String externos(Model model) {
+		model.addAttribute("externos", secretariaService.findAll());
+		return "/externo/externo.xhtml";
 	}
 
 	@GetMapping("/documento/cadastro")
@@ -102,14 +109,15 @@ public class MainController {
 
 	@PostMapping("/documento/salvar")
 	public String salvarDocumento(Model model, @ModelAttribute DocumentoDto documentoDto) {
-
 		Documento documento = documentoDto.toDocumento();
-		documento.setNumero(setorService.pegarNumero(documento.getSetor().getId()));
+		if (documento.getTipoDocumento())
+			documento.setNumero(setorService.pegarNumeroGeral());
+		else
+			documento.setNumero(setorService.pegarNumeroSetor(documento.getSetor().getId()));
 		documento.setCriador(buscarUsuario());
 		System.out.println(documento.toString());
 		documentoService.save(documento);
-
-		return "/documento/documento.xhtml";
+		return documentos(model);
 	}
 
 	@GetMapping("/documento/docx")
@@ -120,7 +128,8 @@ public class MainController {
 			FileInputStream fis = new FileInputStream("C:\\Users\\rafae\\Documents\\Docs\\templateOficio.docx");
 			document = new XWPFDocument(OPCPackage.open(fis));
 			// Abre o documento .docx
-			//document = new XWPFDocument(OPCPackage.open("C:\\Users\\rafae\\Documents\\Docs\\template2.docx"));
+			// document = new
+			// XWPFDocument(OPCPackage.open("C:\\Users\\rafae\\Documents\\Docs\\template2.docx"));
 			// Obtém todos os parágrafos do documento
 			List<XWPFParagraph> paragraphs = document.getParagraphs();
 			DocumentoDto doc = DocumentoDto.fromDocumento(documentoService.findById(documentoId));
@@ -129,6 +138,11 @@ public class MainController {
 			for (Map.Entry<String, Object> entry : mapDoc.entrySet()) {
 				String chave = entry.getKey();
 				Object valor = entry.getValue();
+				if (chave.equals("tipoDocumento"))
+					if ((boolean) valor == false)
+						valor = "C.I";
+					else
+						valor = "Ofício";
 				System.out.println("Buscando: " + chave + ",para colocar: " + valor);
 				for (XWPFParagraph paragraph : paragraphs) {
 //					for (XWPFRun run : paragraph.getRuns()) { 
@@ -139,34 +153,36 @@ public class MainController {
 //							run.setText(text, 0); }
 //					}//teste
 					String paragraphText = paragraph.getText();
-					System.out.println("Original:"+paragraphText);
-					if (paragraph.getText().contains(chave)) { 
-						String updatedText = paragraphText.replace("<"+chave+">", valor.toString());
-						System.out.println("atualizado :"+updatedText);
-						// Substitui o texto do parágrafo 
-						
+					System.out.println("Original:" + paragraphText);
+					if (paragraph.getText().contains(chave)) {
+						String updatedText = paragraphText.replace("<" + chave + ">", valor.toString());
+						System.out.println("atualizado :" + updatedText);
+						// Substitui o texto do parágrafo
+
 						paragraph.getRuns().forEach(run -> {
-															System.out.println("run :"+run.text());
-															
-															run.setText("",0);
-													});  
-						System.out.println("running:"+paragraph.getText());
-						int count=0;
+							System.out.println("run :" + run.text());
+
+							run.setText("", 0);
+						});
+						System.out.println("running:" + paragraph.getText());
+						int count = 0;
 						count = paragraph.getRuns().size();
-						for(int i=0;i < count;i++) paragraph.removeRun(i);
-						paragraph.createRun().setText(updatedText,0); 
-						
-						System.out.println("final:"+paragraph.getText());
-						
-						}
+						for (int i = 0; i < count; i++)
+							paragraph.removeRun(i);
+						paragraph.createRun().setText(updatedText, 0);
+
+						System.out.println("final:" + paragraph.getText());
+
 					}
-				}			
-			 FileOutputStream out = new
-			 FileOutputStream("C:\\Users\\rafae\\Documents\\Docs\\saida\\"+doc.getSetorNome()+"-"+doc.getNumero()+"-"+doc.getAnoCadastro()+".docx");
-			 document.write(out); 
-			 out.close();
-			 document.close();
-			 fis.close();
+				}
+			}
+			FileOutputStream out = new FileOutputStream("C:\\Users\\rafae\\Documents\\Docs\\saida\\"
+					+ doc.getSetorNome() + "-" + doc.getNumero() + "-" + doc.getAnoCadastro() + ".docx");
+			document.write(out);
+			out.close();
+
+			document.close();
+			fis.close();
 		} catch (InvalidFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -185,13 +201,21 @@ public class MainController {
 		return "/setor/cadastroSetor.xhtml";
 	}
 
+	@GetMapping("/setor/editar")
+	public String editarSetor(Model model, @RequestParam UUID setorId) {
+		Setor setor = setorService.findById(setorId);
+		model.addAttribute("setor", setor);
+		return "/setor/cadastroSetor.xhtml";
+	}
+
 	@PostMapping("/setor/salvar")
 	public String salvarSetor(Model model, @Validated @ModelAttribute Setor setor, Errors errors) {
 		if (errors.hasErrors()) {
 			model.addAttribute("setor", setor);
 			return "/setor/cadastroSetors.xhtml";
 		}
-		setor.setNumero(1);
+		if (setor.getId() == null)
+			setor.setNumero(1);
 		System.out.println(setor.toString());
 		try {
 			setorService.save(setor);
@@ -202,7 +226,79 @@ public class MainController {
 
 		}
 
-		return "/util/home.xhtml";
+		return setores(model);
+	}
+
+	@GetMapping("/externo/cadastro")
+	public String cadastroExterno(Model model) {
+		Secretaria externo = new Secretaria();
+		Users user = buscarUsuario();
+		model.addAttribute("setor", user.getSetor().getNome());
+		model.addAttribute("externo", externo);
+		return "/externo/cadastroExterno.xhtml";
+	}
+
+	@GetMapping("/externo/editar")
+	public String editarExterno(Model model, @RequestParam UUID externoId) {
+		Secretaria externo = secretariaService.findById(externoId);
+		Users user = buscarUsuario();
+		model.addAttribute("setor", user.getSetor().getNome());
+		model.addAttribute("externo", externo);
+		return "/externo/cadastroExterno.xhtml";
+	}
+
+	@PostMapping("/externo/salvar")
+	public String salvarExterno(Model model, @Validated @ModelAttribute Secretaria externo, Errors errors) {
+		if (errors.hasErrors()) {
+			model.addAttribute("externo", externo);  
+			return "/externo/cadastroexterno.xhtml";
+		}
+
+		try {
+			secretariaService.save(externo);
+		} catch (Exception e) {
+			model.addAttribute("error", e.getMessage());
+			model.addAttribute("setor", externo);
+			return "/setor/cadastroSetor.xhtml";
+ 
+		}
+
+		return externos(model);
+	}
+	@GetMapping("/usuario/cadastro")
+	public String cadastroUsuario(Model model) {
+		Users usuario = new Users();
+		model.addAttribute("setores",setorService.findAll()); 
+		model.addAttribute("usuario", usuario);
+		
+		return "/usuario/cadastroUsuario.xhtml";
+	}
+	@GetMapping("/usuario/editar")
+	public String editaroUsuario(Model model,@RequestParam Long userId) {
+		Users usuario = usersService.findById(userId);
+		model.addAttribute("setores",setorService.findAll());	
+		model.addAttribute("usuario", usuario);
+		
+		return "/usuario/cadastroUsuario.xhtml";
+	}
+	@PostMapping("/usuario/salvar")
+	public String salvarUsuario(Model model, @Validated @ModelAttribute Users usuario, Errors errors) {
+		if (errors.hasErrors()) {
+			model.addAttribute("usuario", usuario);
+			return "/usuario/cadastroUsuario.xhtml";
+		}
+		
+		try {
+			usersService.save(usuario);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			model.addAttribute("error", e.getMessage());
+			model.addAttribute("usuario", usuario);
+			return "/usuario/cadastroUsuario.xhtml";
+
+		}
+
+		return usuarios(model);
 	}
 
 	private Users buscarUsuario() {

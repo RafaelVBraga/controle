@@ -50,35 +50,35 @@ body {
 		<div class="d-flex justify-content-start align-items-center gap-5 p-5">
 				<div>
 					<a class="btn btn-primary"
-						th:href="@{/setor/cadastro}">Novo Setor</a>
+						th:href="@{/externo/cadastro}">Novo Externo</a>
 				</div>				
 			</div>
 
 	</div>
 	<div class="container-fluid h-50">
-			<div th:if="${!#arrays.isEmpty(setores)}">
+			<div th:if="${!#arrays.isEmpty(externos)}">
 				<table class="table table-light table-striped rouded-top shadow w-100 h-100">
 				<thead>
 				<tr>
 					<th class="table-light">Nome</th>
-					<th class="table-light">Número</th>
+					<th class="table-light">Sigla</th>					
 					<th class="table-light">Ações</th>
 					
 				</tr>
 				</thead>
 				<tbody>
-				<tr th:each="setor, iStat :${ setores }">
+				<tr th:each="ext, iStat :${ externos }">
 					
-					<td th:text="${setor.nome}"></td>
-					<td th:text="${setor.numero}"></td>
+					<td th:text="${ext.nome}"></td>			
+					<td th:text="${ext.sigla}"></td>							
 					<td>  
-						<a th:href="@{/setor/editar(setorId= ${setor.id})}" class="btn btn-primary">Editar</a>
+						<a th:href="@{/externo/editar(externoId= ${ext.id})}" class="btn btn-primary">Editar</a>
 					</td>
 				</tbody>
 				
 				</table>
 			</div>
-			<div th:unless="${!#arrays.isEmpty(setores)}" class="d-flex h-100 justify-content-center align-items-center">
+			<div th:unless="${!#arrays.isEmpty(externos)}" class="d-flex h-100 justify-content-center align-items-center">
 				<h2>Não há informações</h2>
 			</div>
 	</div>

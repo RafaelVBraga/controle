@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,7 +60,9 @@ public class DocumentoDto implements Serializable {
 
 	public static DocumentoDto fromDocumento(Documento doc) {
 		DocumentoDto docDto = new DocumentoDto();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
+        
 
 		if (doc.getId() != null)
 			docDto.setId(doc.getId());

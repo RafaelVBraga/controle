@@ -37,8 +37,7 @@ body {
 
 
 <body>
-<div th:insert="~{fragments/components.xhtml :: navbar}">
-	</div>
+	<div th:insert="~{fragments/components.xhtml :: navbar}"></div>
 	<div
 		class="d-flex flex-column justify-content-center align-items-center vh-100 w-100">
 		<h1 class="text-primary m-5 shadow-sm">
@@ -50,7 +49,7 @@ body {
 			<span th:if="${error}!=null" class="text-danger" th:text="${error}">Campo
 				necessário</span>
 		</div>
-		<form class="bg-azul-claro p-4 rounded" th:action="@{/setor/salvar}"
+		<form class="bg-azul-claro p-4 rounded" th:action="@{/usuario/salvar}"
 			th:object="${usuario}" method="post">
 			<div
 				class="d-flex flex-column justify-content-between align-items-center gap-5">
@@ -82,10 +81,9 @@ body {
 					<div class="form-group">
 						<label class="form-label">Setores <span
 							th:if="${#arrays.isEmpty(setores)}">Sem informações</span></label> <select
-							class="form-select" id="select_set" th:field="*{setor}" th:value="*{setor.id}"
+							class="form-select" id="select_set" th:field="*{setor}"
 							th:unless="${#arrays.isEmpty(setores)}"
 							th:classappend="${#fields.hasErrors('setor')}?'border border-danger':''">
-							<option>- Selecione um setor-</option>
 							<option th:each="setr,stat: ${setores}" th:value="${setr.nome}"
 								th:text="${setr.nome}">
 						</select>
