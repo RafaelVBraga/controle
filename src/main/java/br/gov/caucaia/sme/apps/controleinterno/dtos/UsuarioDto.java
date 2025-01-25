@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
+import br.gov.caucaia.sme.apps.controleinterno.security.Authorities;
 import br.gov.caucaia.sme.apps.controleinterno.security.Users;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class UsuarioDto implements Serializable {
 	private String matricula;
 	private String setorNome;
 	private UUID setorId;
+	private Boolean isGerente;
 	
 	public static UsuarioDto fromUsers(Users user) {
 		UsuarioDto usuarioDto = new UsuarioDto();
@@ -29,6 +31,13 @@ public class UsuarioDto implements Serializable {
 		usuarioDto.setMatricula(user.getMatricula());
 		usuarioDto.setSetorNome(user.getSetor().getNome());
 		usuarioDto.setSetorId(user.getSetor().getId());		
+		if(!user.getAuthorities().isEmpty()) {
+			for(Authorities authority : user.getAuthorities()) {
+				if(authority.getAuthority().contains("ADMIN")||authority.getAuthority().contains("DEVELOPER"))
+					usuarioDto.setIsGerente(true);
+			}
+		}
+		
 		return usuarioDto;
 	}
 	public Users toUsers() {

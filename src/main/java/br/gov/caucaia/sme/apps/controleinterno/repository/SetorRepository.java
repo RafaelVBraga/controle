@@ -10,5 +10,8 @@ import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
 
 @Repository
 public interface SetorRepository extends JpaRepository<Setor,UUID> {
-		Optional<Setor> findByIdAndAno(UUID id, Integer ano);
+		
+	Optional<Setor> findByIdAndAno(UUID id, Integer ano);
+
+		Setor findByNome(String string);
 }

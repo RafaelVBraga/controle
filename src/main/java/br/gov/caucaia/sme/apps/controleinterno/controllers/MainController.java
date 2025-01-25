@@ -5,8 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -32,7 +34,9 @@ import br.gov.caucaia.sme.apps.controleinterno.dtos.UsuarioDto;
 import br.gov.caucaia.sme.apps.controleinterno.models.Documento;
 import br.gov.caucaia.sme.apps.controleinterno.models.Secretaria;
 import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
+import br.gov.caucaia.sme.apps.controleinterno.security.Authorities;
 import br.gov.caucaia.sme.apps.controleinterno.security.Users;
+import br.gov.caucaia.sme.apps.controleinterno.service.AuthoritiesService;
 import br.gov.caucaia.sme.apps.controleinterno.service.DocumentoService;
 import br.gov.caucaia.sme.apps.controleinterno.service.SecretariaService;
 import br.gov.caucaia.sme.apps.controleinterno.service.SetorService;
@@ -52,6 +56,9 @@ public class MainController {
 
 	@Autowired
 	private SecretariaService secretariaService;
+	
+	@Autowired 
+	private AuthoritiesService authoritiesService;
 
 	@GetMapping("/login")
 	public String login(Model model) {
@@ -290,19 +297,69 @@ public class MainController {
 	}
 	@PostMapping("/usuario/salvar")
 	public String salvarUsuario(Model model, @Validated @ModelAttribute UsuarioDto usuario, Errors errors) {
+		Users user = buscarUsuario();	
 		if (errors.hasErrors()) {
+					
+			model.addAttribute("setor", user.getSetor().getNome());
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
 		}
-		Users user = usuario.toUsers();
+		Users userToSave = usuario.toUsers();
 		BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-		user.setPassword(bcrypt.encode("senha123"));
+		userToSave.setPassword(bcrypt.encode("senha123"));
 		Setor setor = setorService.findById(usuario.getSetorId());		
-		user.setSetor(setor);
+		userToSave.setSetor(setor);
+		Set<Authorities> authorities = new HashSet<Authorities>();
+		if(usuario.getIsGerente()) {
+			authorities.add(authoritiesService.load("ROLE_ADMIN"));
+		}
+		authorities.add(authoritiesService.load("ROLE_USER"));
+		userToSave.setAccountNonExpired(true);
+		userToSave.setAccountNonLocked(true);
+		userToSave.setCredentialsNonExpired(true);
+		userToSave.setEnabled(true);
+		userToSave.setAuthorities(authorities);
 		try {			
-			usersService.save(user);
+			usersService.save(userToSave);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+			model.addAttribute("setor", userToSave.getSetor().getNome());
+			model.addAttribute("error", e.getMessage());
+			model.addAttribute("usuario", usuario);
+			return "/usuario/cadastroUsuario.xhtml";
+
+		}
+
+		return usuarios(model);
+	}
+	@PostMapping("/usuario/editar")
+	public String editarUsuario(Model model, @Validated @ModelAttribute UsuarioDto usuario, Errors errors) {
+		Users user = buscarUsuario();	
+		if (errors.hasErrors()) {
+					
+			model.addAttribute("setor", user.getSetor().getNome());
+			model.addAttribute("usuario", usuario);
+			return "/usuario/cadastroUsuario.xhtml";
+		}
+		Users userToSave = usersService.findById(usuario.getId());
+		
+		Setor setor = setorService.findById(usuario.getSetorId());		
+		userToSave.setSetor(setor);
+		Set<Authorities> authorities = new HashSet<Authorities>();
+		if(usuario.getIsGerente()) {
+			authorities.add(authoritiesService.load("ROLE_ADMIN"));
+		}
+		authorities.add(authoritiesService.load("ROLE_USER"));
+		userToSave.setAccountNonExpired(true);
+		userToSave.setAccountNonLocked(true);
+		userToSave.setCredentialsNonExpired(true);
+		userToSave.setEnabled(true);
+		userToSave.setAuthorities(authorities);
+		try {			
+			usersService.save(userToSave);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			model.addAttribute("setor", userToSave.getSetor().getNome());
 			model.addAttribute("error", e.getMessage());
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";

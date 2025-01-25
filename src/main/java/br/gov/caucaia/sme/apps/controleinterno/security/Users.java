@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,11 +33,11 @@ public class Users{
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private Long id;
 	
-	@NotNull@Column(unique = true)
+	@NotBlank @Column(unique = true)
 	private String username;
 	@NotNull
 	private String password;
-	@NotNull
+	@NotBlank
 	private String nome;
 	@NotNull
 	private String matricula;
