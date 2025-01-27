@@ -31,6 +31,7 @@ public class DocumentoDto implements Serializable {
 	private Long criadorId;
 	private String criadorNome;
 	private Boolean tipoDocumento;
+	private String status;
 
 	private UUID setorId;
 	private String setorNome;
@@ -43,6 +44,7 @@ public class DocumentoDto implements Serializable {
 		doc.setDataCadastro(LocalDate.parse(this.dataCadastro, formatter));
 		doc.setNumero(this.numero);
 		doc.setAnoCadastro(this.anoCadastro);
+		doc.setStatus(this.status);
 		doc.setConteudo(this.conteudo);
 		doc.setAssunto(this.assunto);
 		Users user = new Users();
@@ -74,6 +76,8 @@ public class DocumentoDto implements Serializable {
 			docDto.setAnoCadastro(doc.getAnoCadastro());
 		if (doc.getConteudo() != null)
 			docDto.setConteudo(doc.getConteudo());
+		if (doc.getStatus() != null)
+			docDto.setStatus(doc.getStatus());
 		if (doc.getAssunto() != null)
 			docDto.setAssunto(doc.getAssunto());
 		if (doc.getCriador() != null)
@@ -91,7 +95,7 @@ public class DocumentoDto implements Serializable {
 
 		return docDto;
 	}
-
+	//função necessária para inserirr os dados do documentoDto no arquivo DOCX usando o POI da Oracle
 	public Map<String,Object> toHashMap() {
 		Map<String, Object> documentoDtoMap = new HashMap<>();
 		try {

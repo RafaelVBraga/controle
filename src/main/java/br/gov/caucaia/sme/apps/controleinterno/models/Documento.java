@@ -29,6 +29,7 @@ public class Documento implements Serializable{
 	@Column(columnDefinition = "TEXT")
 	private String conteudo;
 	private String assunto;
+	private String status;
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Users criador;
 	private Boolean tipoDocumento;

@@ -21,6 +21,10 @@ public interface DocumentoRepository extends JpaRepository<Documento, UUID>{
 	
 	List<Documento> findByDestino(String destino);
 	
+	List<Documento> findByStatus(String status);
+	
+	List<Documento> findByStatusAndTipoDocumento(String status, Boolean tipoDocumento);
+	
 	
 	
 }

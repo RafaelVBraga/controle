@@ -44,4 +44,15 @@ public class DocumentoService {
 	public List<Documento> findByAssunto(String assunto){
 		return docRepo.findByDestino(assunto);
 	}
+	public List<Documento> findByStatus(String status){
+		return docRepo.findByStatus(status);
+	}
+	public List<Documento> findByStatusAndTipo(String status, Boolean tipo){
+		return docRepo.findByStatusAndTipoDocumento(status, tipo);
+	}
+	
+	public void saveAll(List<Documento> docs) {
+		docRepo.saveAll(docs);
+	}
+	
 }

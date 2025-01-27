@@ -46,6 +46,7 @@ body {
 			<form class="form-group h-100 d-flex justify-content-start align-items-center gap-2 p-2">
 				<label ><strong>Número</strong><input class="form-control"></label> 
 				<label><strong>Data</strong><input type="date" class="form-control"></label>
+				<label><strong>Status</strong><input type="date" class="form-control"></label>
 				<label><strong>Destino</strong><input class="form-control"></label>
 				<label><strong>Assunto</strong><input class="form-control"></label>
 				<input class="btn btn-primary h-75 mt-3"type="submit"value="Pesquisar">
@@ -71,6 +72,7 @@ body {
 				<tr>
 					<th class="table-light">Data</th>
 					<th class="table-light">Número</th>
+					<th class="table-light">Status</th>
 					<th class="table-light">Destino</th>
 					<th class="table-light">Ações</th>
 				</tr>
@@ -79,9 +81,16 @@ body {
 				<tr th:each="doc, iStat :${ documentos }">
 					<td th:text="${#temporals.format(doc.dataCadastro, 'MM-yyyy')}"></td>
 					<td th:text="${doc.numero}"></td>
+					<td th:class="${#strings.equals(doc.status,'CRIADO')}?'text-danger':'text-success'"th:text="${doc.status}"></td>
 					<td th:text="${doc.destino}"></td>
 					<td>  
-						<a th:href="@{/documento/docx(documentoId= ${doc.id})}" class="btn btn-primary">Gerar Docx</a>
+						<span th:if="${#strings.equals(doc.status,'CRIADO')}"  
+						   class="btn btn-secondary text-light">Gerar Docx</span>
+						<a th:unless="${#strings.equals(doc.status,'CRIADO')}" th:href="@{/documento/docx(documentoId= ${doc.id})}" 
+						   class="btn btn-primary">Gerar Docx</a>
+						
+						<a th:href="@{/documento/editar(documentoId= ${doc.id})}" 
+						   class="btn btn-primary">Editar</a>
 					</td>
 				</tbody>
 				

@@ -43,7 +43,7 @@ import br.gov.caucaia.sme.apps.controleinterno.service.SetorService;
 import br.gov.caucaia.sme.apps.controleinterno.service.UsersService;
 
 @Controller
-public class MainController {
+public class MainController { 
 	@Autowired
 	private SetorService setorService;
 
@@ -102,7 +102,7 @@ public class MainController {
 		documento.setTipoDocumento(docTipo);
 		documento.setCriadorNome(user.getNome());
 		documento.setAnoCadastro(LocalDate.now().getYear());
-		documento.setDataCadastro(DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDate.now()));
+		documento.setDataCadastro(DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDate.now()));		
 		documento.setSetorId(user.getSetor().getId());
 		documento.setSetorNome(user.getSetor().getNome());
 
@@ -120,10 +120,13 @@ public class MainController {
 	@PostMapping("/documento/salvar")
 	public String salvarDocumento(Model model, @ModelAttribute DocumentoDto documentoDto) {
 		Documento documento = documentoDto.toDocumento();
-		if (documento.getTipoDocumento())
-			documento.setNumero(setorService.pegarNumeroGeral());
-		else
+		documento.setStatus("CRIADO");
+		if (!documento.getTipoDocumento()) {
 			documento.setNumero(setorService.pegarNumeroSetor(documento.getSetor().getId()));
+			documento.setStatus("CONFIRMADO");
+		}
+//			documento.setNumero(setorService.pegarNumeroGeral());		
+		
 		documento.setCriador(buscarUsuario());
 		System.out.println(documento.toString());
 		documentoService.save(documento);
