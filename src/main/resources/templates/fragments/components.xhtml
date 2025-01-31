@@ -12,8 +12,8 @@
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">					
 					<li class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/documento}">Documento</a> 
 					<li sec:authorize="hasRole('ADMIN') or hasRole('DEVELOPER')" class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/setor}">Setor</a> 
-					<li sec:authorize="hasRole('ADMIN')" class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/externo}">Externo</a>
-					<li sec:authorize="hasRole('ADMIN')" class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/usuario}">Usuario</a>					
+					<li sec:authorize="hasRole('ADMIN') or hasRole('DEVELOPER')"  class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/externo}">Externo</a>
+					<li sec:authorize="hasRole('ADMIN') or hasRole('DEVELOPER')"  class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/usuario}">Usuario</a>					
 					<li class="nav-item"><a class="mt-4 text-light nav-link" th:href="@{/logout}">Sair</a></ul>
 			</div>
 		</nav>

@@ -84,10 +84,13 @@ body {
 						<label for="matricula">Matrícula</label> <input type="text"
 							id="matricula" th:field="*{matricula}" class="form-control">
 					</div>
-					<div class="form-check form-switch">
-						<input class="form-check-input" type="checkbox" role="switch"
-							id="checkGerencial" th:field="*{isGerente}" th:checked="${isGerente}"><label
-							class="form-check-label" for="checkGerencial">Gerente</label>
+					<div class="form-check form-switch d-flex flex-column">
+						<label
+							class="form-check-label" for="checkGerencial"><input class="form-check-input" type="checkbox" role="switch"
+							id="checkGerencial" th:field="*{isGerente}" th:checked="${isGerente}">Gerente</label>
+							<label
+							class="form-check-label" for="checkSecretaria"><input class="form-check-input" type="checkbox" role="switch"
+							id="checkSecretaria" th:field="*{isSecretaria}" th:checked="${isSecretaria}">Secretário(a)</label>
 					</div>
 					
 				</div>

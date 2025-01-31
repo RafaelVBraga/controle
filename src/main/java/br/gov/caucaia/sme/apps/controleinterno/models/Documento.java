@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Data;
  
 @Data@Entity
-public class Documento implements Serializable{
+public class Documento implements Serializable{ 
 
 	/**
 	 *  

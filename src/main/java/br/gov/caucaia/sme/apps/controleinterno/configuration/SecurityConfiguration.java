@@ -24,11 +24,11 @@ public class SecurityConfiguration {
 			authConfig.requestMatchers(HttpMethod.GET, "/css/**").permitAll();
 			authConfig.requestMatchers(HttpMethod.GET, "/js/**").permitAll();
 			authConfig.requestMatchers(HttpMethod.GET, "/img/**").permitAll();
-			authConfig.requestMatchers(HttpMethod.GET, "/util/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+			authConfig.requestMatchers(HttpMethod.GET, "/util/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN","ROLE_GERENTE","ROLE_SECRETARIA",
 					"ROLE_DEVELOPER");
-			authConfig.requestMatchers(HttpMethod.GET, "/documento/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+			authConfig.requestMatchers(HttpMethod.GET, "/documento/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN","ROLE_GERENTE","ROLE_SECRETARIA",
 					"ROLE_DEVELOPER");
-			authConfig.requestMatchers(HttpMethod.POST, "/documento/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+			authConfig.requestMatchers(HttpMethod.POST, "/documento/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN","ROLE_GERENTE","ROLE_SECRETARIA",
 					"ROLE_DEVELOPER");
 			authConfig.requestMatchers(HttpMethod.GET, "/setor/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
 					"ROLE_DEVELOPER");

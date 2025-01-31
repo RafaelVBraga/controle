@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+<style>
+
+body {
+	min-width: 320px;
+}
+
+.flex-column-when-small {
+	display: flex;
+}
+
+@media ( max-width : 768px) {
+	.flex-column-when-small {
+		flex-direction: column;
+	}
+}
+
+.bg-azul-claro {
+	background: #E7E6FE;
+}
+.full-screen { width: 100vw; height: 100vh;
+</style>
+<title>Controle Interno</title>
+
+</head>
+
+
+<body class="full-screen">
+	<div th:insert="~{fragments/components.xhtml :: navbar}"></div>
+	
+
+
+
+	<div class="d-flex justify-content-between shadow">
+		
+		<div>
+			<form class="form-group h-100 d-flex justify-content-start align-items-center gap-2 p-2">
+				<label ><strong>Número</strong><input class="form-control"></label> 
+				<label><strong>Data</strong><input type="date" class="form-control"></label>
+				<label><strong>Status</strong><input type="date" class="form-control"></label>
+				<label><strong>Destino</strong><input class="form-control"></label>
+				<label><strong>Assunto</strong><input class="form-control"></label>
+				<input class="btn btn-primary h-75 mt-3"type="submit"value="Pesquisar">
+			</form>
+		</div>
+		<div class="d-flex justify-content-start align-items-center gap-5">
+				<div>
+					<a class="btn btn-primary"
+						th:href="@{/documento/cadastro(docTipo = ${false})}">Gerar CI</a>
+				</div>
+				<div>
+					<a class="btn btn-primary"
+						th:href="@{/documento/cadastro(docTipo = ${true})}">Gerar
+						Oficio</a>
+				</div>
+			</div>
+
+	</div>
+	<div class="container-fluid h-50">
+			<div th:if="${!#arrays.isEmpty(documentos)}">
+				<table class="table table-light table-striped rouded-top shadow w-100 h-100">
+				<thead>
+				<tr>
+					<th class="table-light">Data</th>
+					<th class="table-light">Número</th>
+					<th class="table-light">Status</th>
+					<th class="table-light">Destino</th>
+					<th class="table-light">Ações</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="doc, iStat :${ documentos }">
+					<td th:text="${#temporals.format(doc.dataCadastro, 'MM-yyyy')}"></td>
+					<td th:text="${doc.numero}"></td>
+					<td th:class="${#strings.equals(doc.status,'CRIADO')}?'text-danger':'text-success'"th:text="${doc.status}"></td>
+					<td th:text="${doc.destino}"></td>
+					<td>  
+						<span th:if="${#strings.equals(doc.status,'CRIADO')}"  
+						   class="btn btn-secondary text-light">Gerar Docx</span>
+						<a th:unless="${#strings.equals(doc.status,'CRIADO')}" th:href="@{/documento/docx(documentoId= ${doc.id})}" 
+						   class="btn btn-primary">Gerar Docx</a>
+						
+						<a th:href="@{/documento/editar(documentoId= ${doc.id})}" 
+						   class="btn btn-primary">Editar</a>
+					</td>
+				</tbody>
+				
+				</table>
+			</div>
+			<div th:unless="${!#arrays.isEmpty(documentos)}" class="d-flex h-100 justify-content-center align-items-center">
+				<h2>Não há informações</h2>
+			</div>
+	</div>
+</body>
+</html>

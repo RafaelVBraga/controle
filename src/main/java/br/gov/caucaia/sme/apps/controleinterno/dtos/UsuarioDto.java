@@ -22,6 +22,7 @@ public class UsuarioDto implements Serializable {
 	private String setorNome;
 	private UUID setorId;
 	private Boolean isGerente;
+	private Boolean isSecretaria;
 	
 	public static UsuarioDto fromUsers(Users user) {
 		UsuarioDto usuarioDto = new UsuarioDto();
@@ -35,6 +36,8 @@ public class UsuarioDto implements Serializable {
 			for(Authorities authority : user.getAuthorities()) {
 				if(authority.getAuthority().contains("ADMIN")||authority.getAuthority().contains("DEVELOPER"))
 					usuarioDto.setIsGerente(true);
+				if(authority.getAuthority().contains("SECRETARIA"))
+					usuarioDto.setIsSecretaria(true);
 			}
 		}
 		

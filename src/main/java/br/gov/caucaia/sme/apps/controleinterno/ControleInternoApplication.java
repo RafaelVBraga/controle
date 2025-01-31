@@ -24,4 +24,6 @@ public class ControleInternoApplication {
 	    engine.setTemplateResolver(templateResolver);
 	    return engine;
 	}
+	
+	
 }

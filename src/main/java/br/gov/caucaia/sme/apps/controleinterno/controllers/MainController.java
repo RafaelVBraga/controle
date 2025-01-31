@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.gov.caucaia.sme.apps.controleinterno.dtos.DocumentoDto;
+import br.gov.caucaia.sme.apps.controleinterno.dtos.PesquisaDocumentoDto;
+import br.gov.caucaia.sme.apps.controleinterno.dtos.PesquisaSetorDto;
 import br.gov.caucaia.sme.apps.controleinterno.dtos.UsuarioDto;
 import br.gov.caucaia.sme.apps.controleinterno.models.Documento;
 import br.gov.caucaia.sme.apps.controleinterno.models.Secretaria;
@@ -48,8 +50,7 @@ public class MainController {
 	private SetorService setorService;
 
 	@Autowired
-	private UsersService usersService;
-	
+	private UsersService usersService;	
 
 	@Autowired
 	private DocumentoService documentoService;
@@ -79,12 +80,19 @@ public class MainController {
 	@GetMapping("/documento")
 	public String documentos(Model model) {
 		model.addAttribute("documentos", documentoService.findDocBySetor(buscarUsuario().getSetor()));
+		model.addAttribute("pesquisaDto", new PesquisaDocumentoDto());
 		return "/documento/documento.xhtml";
 	}
 
 	@GetMapping("/setor")
 	public String setores(Model model) {
-		model.addAttribute("setores", setorService.findAll());
+		if(model.getAttribute("setores")==null) 
+			model.addAttribute("setores", setorService.findAll());			
+		
+		if(model.getAttribute("setorPesquisa")==null) {
+			model.addAttribute("setorPesquisa", new PesquisaSetorDto());
+			
+		}
 		return "/setor/setor.xhtml";
 	}
 
@@ -92,6 +100,13 @@ public class MainController {
 	public String externos(Model model) {
 		model.addAttribute("externos", secretariaService.findAll());
 		return "/externo/externo.xhtml";
+	}
+	@PostMapping("/documento/pesquisar")
+	public String pesquisaDocumento(Model model, @ModelAttribute PesquisaDocumentoDto pesquisaDto) {
+		System.out.println(pesquisaDto.toString());
+		model.addAttribute("pesquisaDto", pesquisaDto);
+		model.addAttribute("documentos",documentoService.findByCriteria(pesquisaDto) );
+		return "/documento/documento.xhtml";
 	}
 
 	@GetMapping("/documento/cadastro")
@@ -116,6 +131,21 @@ public class MainController {
 
 		return "/documento/cadastroDocumento.xhtml";
 	}
+	@GetMapping("/documento/editar")
+	public String editarDocumento(Model model, @RequestParam UUID documentoId) {
+		DocumentoDto documento = DocumentoDto.fromDocumento(documentoService.findById(documentoId));
+		Users user = buscarUsuario();	
+
+		model.addAttribute("documento", documento);
+		if (documento.getTipoDocumento())
+			model.addAttribute("setores", secretariaService.findAll());
+		else
+			model.addAttribute("setores", setorService.findAll());
+
+		model.addAttribute("setorNome", user.getSetor().getNome());
+
+		return "/documento/cadastroDocumento.xhtml";
+	}
 
 	@PostMapping("/documento/salvar")
 	public String salvarDocumento(Model model, @ModelAttribute DocumentoDto documentoDto) {
@@ -124,8 +154,10 @@ public class MainController {
 		if (!documento.getTipoDocumento()) {
 			documento.setNumero(setorService.pegarNumeroSetor(documento.getSetor().getId()));
 			documento.setStatus("CONFIRMADO");
+		} else {
+			documento.setNumero(setorService.pegarNumeroGeral());	
+			documento.setStatus("CONFIRMADO");
 		}
-//			documento.setNumero(setorService.pegarNumeroGeral());		
 		
 		documento.setCriador(buscarUsuario());
 		System.out.println(documento.toString());
@@ -136,73 +168,7 @@ public class MainController {
 	@GetMapping("/documento/docx")
 	public String processDocument(Model model, @RequestParam UUID documentoId) throws IOException {
 
-		XWPFDocument document;
-		try {
-			FileInputStream fis = new FileInputStream("C:\\Users\\rafae\\Documents\\Docs\\templateOficio.docx");
-			document = new XWPFDocument(OPCPackage.open(fis));
-			// Abre o documento .docx
-			// document = new
-			// XWPFDocument(OPCPackage.open("C:\\Users\\rafae\\Documents\\Docs\\template2.docx"));
-			// Obtém todos os parágrafos do documento
-			List<XWPFParagraph> paragraphs = document.getParagraphs();
-			DocumentoDto doc = DocumentoDto.fromDocumento(documentoService.findById(documentoId));
-			Map<String, Object> mapDoc = doc.toHashMap();
-
-			for (Map.Entry<String, Object> entry : mapDoc.entrySet()) {
-				String chave = entry.getKey();
-				Object valor = entry.getValue();
-				if (chave.equals("tipoDocumento"))
-					if ((boolean) valor == false)
-						valor = "C.I";
-					else
-						valor = "Ofício";
-				System.out.println("Buscando: " + chave + ",para colocar: " + valor);
-				for (XWPFParagraph paragraph : paragraphs) {
-//					for (XWPFRun run : paragraph.getRuns()) { 
-//						String text = run.getText(0); 
-//						System.out.println(text);
-//						if (text != null && text.contains(chave)) { 
-//							text = text.replace("<"+chave+">", valor.toString()); 
-//							run.setText(text, 0); }
-//					}//teste
-					String paragraphText = paragraph.getText();
-					System.out.println("Original:" + paragraphText);
-					if (paragraph.getText().contains(chave)) {
-						String updatedText = paragraphText.replace("<" + chave + ">", valor.toString());
-						System.out.println("atualizado :" + updatedText);
-						// Substitui o texto do parágrafo
-
-						paragraph.getRuns().forEach(run -> {
-							System.out.println("run :" + run.text());
-
-							run.setText("", 0);
-						});
-						System.out.println("running:" + paragraph.getText());
-						int count = 0;
-						count = paragraph.getRuns().size();
-						for (int i = 0; i < count; i++)
-							paragraph.removeRun(i);
-						paragraph.createRun().setText(updatedText, 0);
-
-						System.out.println("final:" + paragraph.getText());
-
-					}
-				}
-			}
-			FileOutputStream out = new FileOutputStream("C:\\Users\\rafae\\Documents\\Docs\\saida\\"
-					+ doc.getSetorNome() + "-" + doc.getNumero() + "-" + doc.getAnoCadastro() + ".docx");
-			document.write(out);
-			out.close();
-
-			document.close();
-			fis.close();
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		documentoService.gerarDocumento(documentoId);
 
 		return documentos(model);
 	}
@@ -212,6 +178,15 @@ public class MainController {
 		Setor setor = new Setor();
 		model.addAttribute("setor", setor);
 		return "/setor/cadastroSetor.xhtml";
+	}
+	
+	@PostMapping("/setor/pesquisar")
+	public String pesquisaSetor(Model model, @ModelAttribute PesquisaSetorDto setorPesquisa) {
+		System.out.println(setorPesquisa.toString());
+		model.addAttribute("setores", setorService.findByNomeLista(setorPesquisa.getNome()));
+		model.addAttribute("setorPesquisa", setorPesquisa);
+		return  setores(model);
+		
 	}
 
 	@GetMapping("/setor/editar")
@@ -241,6 +216,7 @@ public class MainController {
 
 		return setores(model);
 	}
+	
 
 	@GetMapping("/externo/cadastro")
 	public String cadastroExterno(Model model) {
@@ -314,9 +290,12 @@ public class MainController {
 		userToSave.setSetor(setor);
 		Set<Authorities> authorities = new HashSet<Authorities>();
 		if(usuario.getIsGerente()) {
-			authorities.add(authoritiesService.load("ROLE_ADMIN"));
+			authorities.add(authoritiesService.load("ROLE_GERENTE"));
 		}
-		authorities.add(authoritiesService.load("ROLE_USER"));
+		if(usuario.getIsSecretaria()) {
+			authorities.add(authoritiesService.load("ROLE_SECRETARIA"));
+		}
+		
 		userToSave.setAccountNonExpired(true);
 		userToSave.setAccountNonLocked(true);
 		userToSave.setCredentialsNonExpired(true);
@@ -350,9 +329,12 @@ public class MainController {
 		userToSave.setSetor(setor);
 		Set<Authorities> authorities = new HashSet<Authorities>();
 		if(usuario.getIsGerente()) {
-			authorities.add(authoritiesService.load("ROLE_ADMIN"));
+			authorities.add(authoritiesService.load("ROLE_GERENTE"));
 		}
-		authorities.add(authoritiesService.load("ROLE_USER"));
+		if(usuario.getIsSecretaria()) {
+			authorities.add(authoritiesService.load("ROLE_SECRETARIA"));
+		}
+		
 		userToSave.setAccountNonExpired(true);
 		userToSave.setAccountNonLocked(true);
 		userToSave.setCredentialsNonExpired(true);

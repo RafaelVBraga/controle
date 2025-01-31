@@ -1,5 +1,6 @@
 package br.gov.caucaia.sme.apps.controleinterno.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,5 +14,7 @@ public interface SetorRepository extends JpaRepository<Setor,UUID> {
 		
 	Optional<Setor> findByIdAndAno(UUID id, Integer ano);
 
-		Setor findByNome(String string);
+		Setor findByNome(String string);		
+
+		List<Setor> findByNomeContaining(String pesq);
 }

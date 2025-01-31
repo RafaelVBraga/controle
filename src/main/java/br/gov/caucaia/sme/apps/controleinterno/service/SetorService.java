@@ -23,12 +23,16 @@ public class SetorService {
 
 		return setorRepo.findAll();
 	}
+	
+	public List<Setor> findByNomeLista(String pesq){
+		return setorRepo.findByNomeContaining(pesq);
+	}
 
 	public Setor findById(UUID id) {
 		return setorRepo.findById(id).get();
 	}
 	public Setor findByNome(String nome) {
-		return setorRepo.findByNome("nome");
+		return setorRepo.findByNome(nome);
 	}
 
 	public Setor save(Setor setor) {
@@ -63,7 +67,7 @@ public class SetorService {
 	public Integer pegarNumeroGeral() {
 		LocalDate dataAtual = LocalDate.now();
 		Integer numeroControle = 0;
-		Setor setor = setorRepo.findByNome("GERAL");
+		Setor setor = setorRepo.findByNome("SECRETARIA");
 		if (setor.getAno() < dataAtual.getYear()) {
 			setor.setNumero(1);
 			setor.setAno(dataAtual.getYear());

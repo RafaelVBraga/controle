@@ -42,8 +42,8 @@ body {
 	<div class="d-flex justify-content-between shadow">
 		
 		<div>
-			<form class="form-group h-100 d-flex justify-content-start align-items-center gap-2 p-5">
-				<label ><strong>Nome</strong><input class="form-control"></label> 						
+			<form th:action = "@{/setor/pesquisar}" method="post" th:object="${setorPesquisa}"class="form-group h-100 d-flex justify-content-start align-items-center gap-2 p-5">
+				<label ><strong>Nome</strong><input th:field ="*{nome}"class="form-control"></label> 						
 				<input class="btn btn-primary h-75 mt-3"type="submit"value="Pesquisar">
 			</form>
 		</div>

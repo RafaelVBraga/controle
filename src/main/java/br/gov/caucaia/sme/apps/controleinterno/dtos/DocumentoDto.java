@@ -63,8 +63,8 @@ public class DocumentoDto implements Serializable {
 	public static DocumentoDto fromDocumento(Documento doc) {
 		DocumentoDto docDto = new DocumentoDto();
 		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
-        
+		//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 		if (doc.getId() != null)
 			docDto.setId(doc.getId());
