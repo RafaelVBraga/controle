@@ -258,7 +258,7 @@ public class MainController {
 	public String cadastroUsuario(Model model) {
 		Users user = buscarUsuario();
 		
-		UsuarioDto usuario = new UsuarioDto();
+		UsuarioDto usuario = new UsuarioDto(); 
 		model.addAttribute("setor", user.getSetor().getNome());
 		model.addAttribute("setores",setorService.findAll()); 
 		model.addAttribute("usuario", usuario);
@@ -295,6 +295,12 @@ public class MainController {
 		if(usuario.getIsSecretaria()) {
 			authorities.add(authoritiesService.load("ROLE_SECRETARIA"));
 		}
+		if(usuario.getIsAdmin()) {
+			authorities.add(authoritiesService.load("ROLE_ADMIN"));
+		}
+		if(usuario.getIsDeveloper()) {
+			authorities.add(authoritiesService.load("ROLE_DEVELOPER"));
+		}
 		
 		userToSave.setAccountNonExpired(true);
 		userToSave.setAccountNonLocked(true);
@@ -316,6 +322,7 @@ public class MainController {
 	}
 	@PostMapping("/usuario/editar")
 	public String editarUsuario(Model model, @Validated @ModelAttribute UsuarioDto usuario, Errors errors) {
+		System.out.println(usuario.toString());
 		Users user = buscarUsuario();	
 		if (errors.hasErrors()) {
 					
@@ -334,11 +341,17 @@ public class MainController {
 		if(usuario.getIsSecretaria()) {
 			authorities.add(authoritiesService.load("ROLE_SECRETARIA"));
 		}
+		if(usuario.getIsAdmin()) {
+			authorities.add(authoritiesService.load("ROLE_ADMIN"));
+		}
+		if(usuario.getIsDeveloper()) {
+			authorities.add(authoritiesService.load("ROLE_DEVELOPER"));
+		}
 		
 		userToSave.setAccountNonExpired(true);
 		userToSave.setAccountNonLocked(true);
 		userToSave.setCredentialsNonExpired(true);
-		userToSave.setEnabled(true);
+		userToSave.setEnabled(usuario.getIsEnabled());
 		userToSave.setAuthorities(authorities);
 		try {			
 			usersService.save(userToSave);

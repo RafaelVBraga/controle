@@ -93,16 +93,16 @@ public class DocumentoService {
 	        }
 
 	        if (pesquisa.getStatus() != null && !pesquisa.getStatus().isEmpty()) {
-	            predicates.add(cb.like(root.get("status"), "%" + pesquisa.getStatus() + "%"));
+	            predicates.add(cb.like(cb.lower(root.get("status")), "%" + pesquisa.getStatus().toLowerCase() + "%"));
 	        }
 	        if (pesquisa.getDestino() != null && !pesquisa.getDestino().isEmpty()) {
-	            predicates.add(cb.like(root.get("destino"), "%" + pesquisa.getDestino() + "%"));
+	            predicates.add(cb.like(cb.lower(root.get("destino")), "%" + pesquisa.getDestino().toLowerCase() + "%"));
 	        }
 	        if (pesquisa.getAssunto() != null && !pesquisa.getAssunto().isEmpty()) {
-	            predicates.add(cb.like(root.get("assunto"), "%" + pesquisa.getAssunto() + "%"));
+	            predicates.add(cb.like(cb.lower(root.get("assunto")), "%" + pesquisa.getAssunto().toLowerCase() + "%"));
 	        }
 
-	        query.where(cb.and(predicates.toArray(new Predicate[0])));
+	        query.where(cb.and(predicates.toArray(new Predicate[0]))); 
 
 	        return entityManager.createQuery(query).getResultList();
 	}

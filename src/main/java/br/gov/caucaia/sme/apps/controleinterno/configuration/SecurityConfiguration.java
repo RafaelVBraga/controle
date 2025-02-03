@@ -30,9 +30,17 @@ public class SecurityConfiguration {
 					"ROLE_DEVELOPER");
 			authConfig.requestMatchers(HttpMethod.POST, "/documento/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN","ROLE_GERENTE","ROLE_SECRETARIA",
 					"ROLE_DEVELOPER");
-			authConfig.requestMatchers(HttpMethod.GET, "/setor/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+			authConfig.requestMatchers(HttpMethod.GET, "/setor/**").hasAnyAuthority("ROLE_ADMIN",
 					"ROLE_DEVELOPER");
-			authConfig.requestMatchers(HttpMethod.POST, "/setor/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN",
+			authConfig.requestMatchers(HttpMethod.POST, "/setor/**").hasAnyAuthority("ROLE_ADMIN",
+					"ROLE_DEVELOPER");
+			authConfig.requestMatchers(HttpMethod.GET, "/usuario/**").hasAnyAuthority("ROLE_ADMIN",
+					"ROLE_DEVELOPER");
+			authConfig.requestMatchers(HttpMethod.POST, "/usuario/**").hasAnyAuthority("ROLE_ADMIN",
+					"ROLE_DEVELOPER");
+			authConfig.requestMatchers(HttpMethod.GET, "/externo/**").hasAnyAuthority("ROLE_ADMIN",
+					"ROLE_DEVELOPER");
+			authConfig.requestMatchers(HttpMethod.POST, "/externo/**").hasAnyAuthority("ROLE_ADMIN",
 					"ROLE_DEVELOPER");
 			authConfig.anyRequest().authenticated();
 		}).csrf(csrf -> csrf.disable()).userDetailsService(myUserDetailsService).formLogin(formLogin -> {

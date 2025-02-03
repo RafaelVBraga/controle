@@ -23,6 +23,9 @@ public class UsuarioDto implements Serializable {
 	private UUID setorId;
 	private Boolean isGerente;
 	private Boolean isSecretaria;
+	private Boolean isDeveloper;
+	private Boolean isAdmin;
+	private Boolean isEnabled;
 	
 	public static UsuarioDto fromUsers(Users user) {
 		UsuarioDto usuarioDto = new UsuarioDto();
@@ -34,12 +37,17 @@ public class UsuarioDto implements Serializable {
 		usuarioDto.setSetorId(user.getSetor().getId());		
 		if(!user.getAuthorities().isEmpty()) {
 			for(Authorities authority : user.getAuthorities()) {
-				if(authority.getAuthority().contains("ADMIN")||authority.getAuthority().contains("DEVELOPER"))
-					usuarioDto.setIsGerente(true);
+				if(authority.getAuthority().contains("GERENTE"))
+					usuarioDto.setIsGerente(true);else usuarioDto.setIsGerente(false);
 				if(authority.getAuthority().contains("SECRETARIA"))
-					usuarioDto.setIsSecretaria(true);
+					usuarioDto.setIsSecretaria(true);else usuarioDto.setIsSecretaria(false);
+				if(authority.getAuthority().contains("DEVELOPER"))
+					usuarioDto.setIsDeveloper(true);else usuarioDto.setIsDeveloper(false);
+				if(authority.getAuthority().contains("ADMIN"))
+					usuarioDto.setIsAdmin(true);else usuarioDto.setIsAdmin(false);
 			}
 		}
+		usuarioDto.setIsEnabled(user.isEnabled());
 		
 		return usuarioDto;
 	}
