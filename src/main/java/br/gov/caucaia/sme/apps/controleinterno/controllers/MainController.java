@@ -268,7 +268,7 @@ public class MainController {
 	@GetMapping("/usuario/editar")
 	public String editaroUsuario(Model model,@RequestParam Long userId) {
 		Users usuario = usersService.findById(userId);
-		UsuarioDto usuarioDto = UsuarioDto.fromUsers(usuario);
+		UsuarioDto usuarioDto = UsuarioDto.fromUsers(usuario);		
 		model.addAttribute("setores",setorService.findAll());	
 		model.addAttribute("usuario", usuarioDto);
 		
@@ -283,35 +283,12 @@ public class MainController {
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
 		}
-		Users userToSave = usuario.toUsers();
-		BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-		userToSave.setPassword(bcrypt.encode("senha123"));
-		Setor setor = setorService.findById(usuario.getSetorId());		
-		userToSave.setSetor(setor);
-		Set<Authorities> authorities = new HashSet<Authorities>();
-		if(usuario.getIsGerente()) {
-			authorities.add(authoritiesService.load("ROLE_GERENTE"));
-		}
-		if(usuario.getIsSecretaria()) {
-			authorities.add(authoritiesService.load("ROLE_SECRETARIA"));
-		}
-		if(usuario.getIsAdmin()) {
-			authorities.add(authoritiesService.load("ROLE_ADMIN"));
-		}
-		if(usuario.getIsDeveloper()) {
-			authorities.add(authoritiesService.load("ROLE_DEVELOPER"));
-		}
 		
-		userToSave.setAccountNonExpired(true);
-		userToSave.setAccountNonLocked(true);
-		userToSave.setCredentialsNonExpired(true);
-		userToSave.setEnabled(true);
-		userToSave.setAuthorities(authorities);
 		try {			
-			usersService.save(userToSave);
+			usersService.save(usuario,user.getSetor());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			model.addAttribute("setor", userToSave.getSetor().getNome());
+			model.addAttribute("setor", user.getSetor().getNome());
 			model.addAttribute("error", e.getMessage());
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
@@ -329,35 +306,13 @@ public class MainController {
 			model.addAttribute("setor", user.getSetor().getNome());
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
-		}
-		Users userToSave = usersService.findById(usuario.getId());
-		
-		Setor setor = setorService.findById(usuario.getSetorId());		
-		userToSave.setSetor(setor);
-		Set<Authorities> authorities = new HashSet<Authorities>();
-		if(usuario.getIsGerente()) {
-			authorities.add(authoritiesService.load("ROLE_GERENTE"));
-		}
-		if(usuario.getIsSecretaria()) {
-			authorities.add(authoritiesService.load("ROLE_SECRETARIA"));
-		}
-		if(usuario.getIsAdmin()) {
-			authorities.add(authoritiesService.load("ROLE_ADMIN"));
-		}
-		if(usuario.getIsDeveloper()) {
-			authorities.add(authoritiesService.load("ROLE_DEVELOPER"));
-		}
-		
-		userToSave.setAccountNonExpired(true);
-		userToSave.setAccountNonLocked(true);
-		userToSave.setCredentialsNonExpired(true);
-		userToSave.setEnabled(usuario.getIsEnabled());
-		userToSave.setAuthorities(authorities);
+		}		
+		Setor setor = setorService.findById(usuario.getSetorId());
 		try {			
-			usersService.save(userToSave);
+			usersService.saveEdition(usuario,setor);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			model.addAttribute("setor", userToSave.getSetor().getNome());
+			model.addAttribute("setor", setor.getNome());
 			model.addAttribute("error", e.getMessage());
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
@@ -366,6 +321,21 @@ public class MainController {
 
 		return usuarios(model);
 	}
+	@GetMapping("/perfil")
+	public String perfil(Model model) {
+		model.addAttribute("usuario", UsuarioDto.fromUsers(buscarUsuario()));
+		return "/usuario/perfil.xhtml";
+	}
+	@PostMapping("/perfil")
+	public String mudarSenha(Model model,@Validated @ModelAttribute UsuarioDto usuario, Errors errors) {
+		if (errors.hasErrors()) {			
+			model.addAttribute("usuario", usuario);
+			return "/usuario/perfil.xhtml";
+		}
+		
+		return "/usuario/perfil.xhtml";
+	}
+	
 
 	private Users buscarUsuario() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

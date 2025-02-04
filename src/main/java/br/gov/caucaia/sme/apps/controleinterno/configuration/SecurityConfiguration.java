@@ -20,16 +20,14 @@ public class SecurityConfiguration {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		
 		http.authorizeHttpRequests(authConfig -> {
-			authConfig.requestMatchers(HttpMethod.GET, "/css/**").permitAll();
-			authConfig.requestMatchers(HttpMethod.GET, "/js/**").permitAll();
-			authConfig.requestMatchers(HttpMethod.GET, "/img/**").permitAll();
+		
+			
+			
 			authConfig.requestMatchers(HttpMethod.GET, "/util/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN","ROLE_GERENTE","ROLE_SECRETARIA",
-					"ROLE_DEVELOPER");
-			authConfig.requestMatchers(HttpMethod.GET, "/documento/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN","ROLE_GERENTE","ROLE_SECRETARIA",
-					"ROLE_DEVELOPER");
-			authConfig.requestMatchers(HttpMethod.POST, "/documento/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN","ROLE_GERENTE","ROLE_SECRETARIA",
-					"ROLE_DEVELOPER");
+					"ROLE_DEVELOPER");			
+					
 			authConfig.requestMatchers(HttpMethod.GET, "/setor/**").hasAnyAuthority("ROLE_ADMIN",
 					"ROLE_DEVELOPER");
 			authConfig.requestMatchers(HttpMethod.POST, "/setor/**").hasAnyAuthority("ROLE_ADMIN",
@@ -42,6 +40,13 @@ public class SecurityConfiguration {
 					"ROLE_DEVELOPER");
 			authConfig.requestMatchers(HttpMethod.POST, "/externo/**").hasAnyAuthority("ROLE_ADMIN",
 					"ROLE_DEVELOPER");
+			authConfig.requestMatchers(HttpMethod.GET,"/perfil/**").permitAll();	
+			authConfig.requestMatchers(HttpMethod.POST,"/perfil/**").permitAll();
+			authConfig.requestMatchers(HttpMethod.GET, "/documento/**").permitAll();					
+			authConfig.requestMatchers(HttpMethod.POST, "/documento/**").permitAll();
+			authConfig.requestMatchers("/css/**").permitAll();
+			authConfig.requestMatchers("/js/**").permitAll();
+			authConfig.requestMatchers("/img/**").permitAll();
 			authConfig.anyRequest().authenticated();
 		}).csrf(csrf -> csrf.disable()).userDetailsService(myUserDetailsService).formLogin(formLogin -> {
 			formLogin.usernameParameter("username").passwordParameter("password").loginPage("/login") // onde carregar a

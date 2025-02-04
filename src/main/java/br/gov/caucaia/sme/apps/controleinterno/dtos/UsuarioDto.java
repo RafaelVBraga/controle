@@ -17,6 +17,7 @@ public class UsuarioDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String username;
+	private String password;
 	private String nome;
 	private String matricula;
 	private String setorNome;
@@ -31,20 +32,36 @@ public class UsuarioDto implements Serializable {
 		UsuarioDto usuarioDto = new UsuarioDto();
 		usuarioDto.setId(user.getId());
 		usuarioDto.setUsername(user.getUsername());
+		usuarioDto.setPassword(user.getPassword());
 		usuarioDto.setNome(user.getNome());
 		usuarioDto.setMatricula(user.getMatricula());
 		usuarioDto.setSetorNome(user.getSetor().getNome());
 		usuarioDto.setSetorId(user.getSetor().getId());		
+		usuarioDto.setIsDeveloper(false);
+		usuarioDto.setIsSecretaria(false);
+		usuarioDto.setIsGerente(false);
+		usuarioDto.setIsAdmin(false);
+		
 		if(!user.getAuthorities().isEmpty()) {
+			
 			for(Authorities authority : user.getAuthorities()) {
-				if(authority.getAuthority().contains("GERENTE"))
-					usuarioDto.setIsGerente(true);else usuarioDto.setIsGerente(false);
-				if(authority.getAuthority().contains("SECRETARIA"))
-					usuarioDto.setIsSecretaria(true);else usuarioDto.setIsSecretaria(false);
-				if(authority.getAuthority().contains("DEVELOPER"))
-					usuarioDto.setIsDeveloper(true);else usuarioDto.setIsDeveloper(false);
-				if(authority.getAuthority().contains("ADMIN"))
-					usuarioDto.setIsAdmin(true);else usuarioDto.setIsAdmin(false);
+				
+				if(authority.getAuthority().contains("GERENTE")) {
+					usuarioDto.setIsGerente(true);
+					continue;
+				}	
+				 if(authority.getAuthority().contains("SECRETARIA")) {
+					usuarioDto.setIsSecretaria(true);	
+					continue;
+				 }	
+				if(authority.getAuthority().contains("DEVELOPER")) {
+					usuarioDto.setIsDeveloper(true);			
+					continue;
+				}	
+				if(authority.getAuthority().contains("ADMIN")) {
+					usuarioDto.setIsAdmin(true);
+					continue;
+				}	
 			}
 		}
 		usuarioDto.setIsEnabled(user.isEnabled());
