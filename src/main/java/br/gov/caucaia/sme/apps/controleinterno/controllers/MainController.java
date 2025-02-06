@@ -1,25 +1,16 @@
 package br.gov.caucaia.sme.apps.controleinterno.controllers;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -36,7 +27,6 @@ import br.gov.caucaia.sme.apps.controleinterno.dtos.UsuarioDto;
 import br.gov.caucaia.sme.apps.controleinterno.models.Documento;
 import br.gov.caucaia.sme.apps.controleinterno.models.Secretaria;
 import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
-import br.gov.caucaia.sme.apps.controleinterno.security.Authorities;
 import br.gov.caucaia.sme.apps.controleinterno.security.Users;
 import br.gov.caucaia.sme.apps.controleinterno.service.AuthoritiesService;
 import br.gov.caucaia.sme.apps.controleinterno.service.DocumentoService;
@@ -60,25 +50,31 @@ public class MainController {
 	
 	@Autowired 
 	private AuthoritiesService authoritiesService;
+	
+	private static final Logger logger = LoggerFactory.getLogger(DocumentoController.class);
 
 	@GetMapping("/login")
 	public String login(Model model) {
+		logger.info("Usuario solicitou página de login");
 		return "/util/login.xhtml";
 	}
 
 	@GetMapping("/home")
 	public String home(Model model) {
+		logger.info("Usuario solicitou página home");
 		return "/util/home.xhtml";
 	}
 
 	@GetMapping("/usuario")
 	public String usuarios(Model model) {
+		logger.info("Usuario solicitou página de usuarios");
 		model.addAttribute("usuarios", usersService.list());
 		return "/usuario/usuario.xhtml";
 	}
 
 	@GetMapping("/documento")
 	public String documentos(Model model) {
+		logger.info("Usuario solicitou página de documentos");
 		model.addAttribute("documentos", documentoService.findDocBySetor(buscarUsuario().getSetor()));
 		model.addAttribute("pesquisaDto", new PesquisaDocumentoDto());
 		return "/documento/documento.xhtml";
@@ -86,6 +82,7 @@ public class MainController {
 
 	@GetMapping("/setor")
 	public String setores(Model model) {
+		logger.info("Usuario solicitou página de setores");
 		if(model.getAttribute("setores")==null) 
 			model.addAttribute("setores", setorService.findAll());			
 		
@@ -98,12 +95,14 @@ public class MainController {
 
 	@GetMapping("/externo")
 	public String externos(Model model) {
+		logger.info("Usuario solicitou página externos");
 		model.addAttribute("externos", secretariaService.findAll());
 		return "/externo/externo.xhtml";
 	}
 	@PostMapping("/documento/pesquisar")
 	public String pesquisaDocumento(Model model, @ModelAttribute PesquisaDocumentoDto pesquisaDto) {
 		System.out.println(pesquisaDto.toString());
+		logger.info("Usuario solicitou pesquisa na pagina de documentos: "+pesquisaDto.toString());
 		model.addAttribute("pesquisaDto", pesquisaDto);
 		model.addAttribute("documentos",documentoService.findByCriteria(pesquisaDto) );
 		return "/documento/documento.xhtml";
@@ -111,6 +110,7 @@ public class MainController {
 
 	@GetMapping("/documento/cadastro")
 	public String cadastroDocumento(Model model, @RequestParam Boolean docTipo) {
+		logger.info("Usuario solicitou página de cadastro de documentos");
 		DocumentoDto documento = new DocumentoDto();
 		Users user = buscarUsuario();
 		documento.setCriadorId(user.getId());
@@ -133,6 +133,7 @@ public class MainController {
 	}
 	@GetMapping("/documento/editar")
 	public String editarDocumento(Model model, @RequestParam UUID documentoId) {
+		logger.info("Usuario solicitou página de edição de documentos");
 		DocumentoDto documento = DocumentoDto.fromDocumento(documentoService.findById(documentoId));
 		Users user = buscarUsuario();	
 
@@ -149,6 +150,7 @@ public class MainController {
 
 	@PostMapping("/documento/salvar")
 	public String salvarDocumento(Model model, @ModelAttribute DocumentoDto documentoDto) {
+		logger.info("Usuario solicitou cadastrar documento");
 		Documento documento = documentoDto.toDocumento();
 		documento.setStatus("CRIADO");
 		if (!documento.getTipoDocumento()) {
@@ -162,19 +164,25 @@ public class MainController {
 		documento.setCriador(buscarUsuario());
 		System.out.println(documento.toString());
 		documentoService.save(documento);
+		logger.info("Documento persistido!");
 		return documentos(model);
 	}
 
 	@GetMapping("/documento/docx")
 	public String processDocument(Model model, @RequestParam UUID documentoId) throws IOException {
-
+		logger.info("Usuario solicitou gerar docx do documento: "+documentoId);
+		try {
 		documentoService.gerarDocumento(documentoId);
-
+		}catch(Exception e) {
+			logger.error("Erro gerando documento .docx", e);
+		}
+		logger.info("Gerado docx do documento: "+documentoId);
 		return documentos(model);
 	}
 
 	@GetMapping("/setor/cadastro")
 	public String cadastroSetor(Model model) {
+		logger.info("Usuario solicitou página cadastro de setor");
 		Setor setor = new Setor();
 		model.addAttribute("setor", setor);
 		return "/setor/cadastroSetor.xhtml";
@@ -182,7 +190,8 @@ public class MainController {
 	
 	@PostMapping("/setor/pesquisar")
 	public String pesquisaSetor(Model model, @ModelAttribute PesquisaSetorDto setorPesquisa) {
-		System.out.println(setorPesquisa.toString());
+		logger.info("Usuario solicitou pesquisa na página de setor: "+setorPesquisa.toString());
+		
 		model.addAttribute("setores", setorService.findByNomeLista(setorPesquisa.getNome()));
 		model.addAttribute("setorPesquisa", setorPesquisa);
 		return  setores(model);
@@ -191,6 +200,7 @@ public class MainController {
 
 	@GetMapping("/setor/editar")
 	public String editarSetor(Model model, @RequestParam UUID setorId) {
+		logger.info("Usuario solicitou página para editar setor: "+setorId);
 		Setor setor = setorService.findById(setorId);
 		model.addAttribute("setor", setor);
 		return "/setor/cadastroSetor.xhtml";
@@ -198,7 +208,9 @@ public class MainController {
 
 	@PostMapping("/setor/salvar")
 	public String salvarSetor(Model model, @Validated @ModelAttribute Setor setor, Errors errors) {
+		logger.info("Usuario solicitou salvar edição do setor: "+setor.getId());
 		if (errors.hasErrors()) {
+			logger.error("Erro de na solicitação salvar edição do setor: "+setor.getId());
 			model.addAttribute("setor", setor);
 			return "/setor/cadastroSetors.xhtml";
 		}
@@ -207,7 +219,9 @@ public class MainController {
 		System.out.println(setor.toString());
 		try {
 			setorService.save(setor);
+			logger.info("Setor criado com sucesso!");
 		} catch (Exception e) {
+			logger.error("Erro na solicitação salvar edição do setor: "+setor.getId(),e);
 			model.addAttribute("error", e.getMessage());
 			model.addAttribute("setor", setor);
 			return "/setor/cadastroSetor.xhtml";
@@ -220,6 +234,7 @@ public class MainController {
 
 	@GetMapping("/externo/cadastro")
 	public String cadastroExterno(Model model) {
+		logger.info("Usuario solicitou página de cadasto de órgão externo!");
 		Secretaria externo = new Secretaria();
 		Users user = buscarUsuario();
 		model.addAttribute("setor", user.getSetor().getNome());
@@ -229,6 +244,7 @@ public class MainController {
 
 	@GetMapping("/externo/editar")
 	public String editarExterno(Model model, @RequestParam UUID externoId) {
+		logger.info("Usuario solicitou página de edição de órgão externo: "+externoId);
 		Secretaria externo = secretariaService.findById(externoId);
 		Users user = buscarUsuario();
 		model.addAttribute("setor", user.getSetor().getNome());
@@ -238,14 +254,19 @@ public class MainController {
 
 	@PostMapping("/externo/salvar")
 	public String salvarExterno(Model model, @Validated @ModelAttribute Secretaria externo, Errors errors) {
+		logger.info("Usuario solicitou salvar órgão externo!");
 		if (errors.hasErrors()) {
+			logger.error("Erro de validação solicitação de salvar órgão externo: ", errors);
 			model.addAttribute("externo", externo);  
 			return "/externo/cadastroexterno.xhtml";
 		}
 
 		try {
 			secretariaService.save(externo);
+			logger.info("Órgão externo salvo com sucesso"
+					+ "!");
 		} catch (Exception e) {
+			logger.error("Erro na solicitação de salvar órgão externo: ",e);
 			model.addAttribute("error", e.getMessage());
 			model.addAttribute("setor", externo);
 			return "/setor/cadastroSetor.xhtml";
@@ -257,7 +278,7 @@ public class MainController {
 	@GetMapping("/usuario/cadastro") 
 	public String cadastroUsuario(Model model) {
 		Users user = buscarUsuario();
-		
+		logger.info("Usuário solicitou página de cadastro de usuario: ");
 		UsuarioDto usuario = new UsuarioDto(); 
 		model.addAttribute("setor", user.getSetor().getNome());
 		model.addAttribute("setores",setorService.findAll()); 
@@ -267,18 +288,26 @@ public class MainController {
 	}
 	@GetMapping("/usuario/editar")
 	public String editaroUsuario(Model model,@RequestParam Long userId) {
+		logger.info("Usuário solicitou página de edição de usuário: ");
 		Users usuario = usersService.findById(userId);
-		UsuarioDto usuarioDto = UsuarioDto.fromUsers(usuario);		
-		model.addAttribute("setores",setorService.findAll());	
+		try {
+		logger.info("Convertendo usuario em usuarioDto");
+		UsuarioDto usuarioDto = UsuarioDto.fromUsers(usuario);	
 		model.addAttribute("usuario", usuarioDto);
+		}catch(Exception e) {
+			logger.error("Erro convertendo usuario",e);
+		}
+		model.addAttribute("setores",setorService.findAll());	
+		
 		
 		return "/usuario/cadastroUsuario.xhtml";
 	}
 	@PostMapping("/usuario/salvar")
 	public String salvarUsuario(Model model, @Validated @ModelAttribute UsuarioDto usuario, Errors errors) {
 		Users user = buscarUsuario();	
+		logger.info("Usuário solcitou salvar novo usuario");
 		if (errors.hasErrors()) {
-					
+			logger.error("Erro de validação solicitação de salvar órgão externo: ", errors);		
 			model.addAttribute("setor", user.getSetor().getNome());
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
@@ -286,6 +315,7 @@ public class MainController {
 		
 		try {			
 			usersService.save(usuario,user.getSetor());
+			logger.info("Sucesso salvando usuário!");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			model.addAttribute("setor", user.getSetor().getNome());
@@ -299,17 +329,19 @@ public class MainController {
 	}
 	@PostMapping("/usuario/editar")
 	public String editarUsuario(Model model, @Validated @ModelAttribute UsuarioDto usuario, Errors errors) {
-		System.out.println(usuario.toString());
+		logger.info("Usuário solcitou editar usuario");
 		Users user = buscarUsuario();	
 		if (errors.hasErrors()) {
-					
+			logger.error("Erro de validação solicitação de editar usuario: ", errors);		
 			model.addAttribute("setor", user.getSetor().getNome());
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
 		}		
 		Setor setor = setorService.findById(usuario.getSetorId());
-		try {			
+		try {	
+			
 			usersService.saveEdition(usuario,setor);
+			logger.info("Sucesso edição de usuário!");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			model.addAttribute("setor", setor.getNome());
@@ -324,15 +356,17 @@ public class MainController {
 	@GetMapping("/perfil")
 	public String perfil(Model model) {
 		model.addAttribute("usuario", UsuarioDto.fromUsers(buscarUsuario()));
+		logger.info("usuário solicitou página de perfil!");
 		return "/usuario/perfil.xhtml";
 	}
 	@PostMapping("/perfil")
 	public String mudarSenha(Model model,@Validated @ModelAttribute UsuarioDto usuario, Errors errors) {
+		logger.info("usuário solicitou alterar senha");
 		if (errors.hasErrors()) {			
 			model.addAttribute("usuario", usuario);
 			return "/usuario/perfil.xhtml";
 		}
-		
+		logger.info("Solicitação alterar senha com sucesso");
 		return "/usuario/perfil.xhtml";
 	}
 	

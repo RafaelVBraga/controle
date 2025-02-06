@@ -42,11 +42,15 @@ public class SecurityConfiguration {
 					"ROLE_DEVELOPER");
 			authConfig.requestMatchers(HttpMethod.GET,"/perfil/**").permitAll();	
 			authConfig.requestMatchers(HttpMethod.POST,"/perfil/**").permitAll();
+			
 			authConfig.requestMatchers(HttpMethod.GET, "/documento/**").permitAll();					
 			authConfig.requestMatchers(HttpMethod.POST, "/documento/**").permitAll();
-			authConfig.requestMatchers("/css/**").permitAll();
+			
+			authConfig.requestMatchers("css/**").permitAll();
 			authConfig.requestMatchers("/js/**").permitAll();
-			authConfig.requestMatchers("/img/**").permitAll();
+			authConfig.requestMatchers("/static/img/**").permitAll();
+			
+			
 			authConfig.anyRequest().authenticated();
 		}).csrf(csrf -> csrf.disable()).userDetailsService(myUserDetailsService).formLogin(formLogin -> {
 			formLogin.usernameParameter("username").passwordParameter("password").loginPage("/login") // onde carregar a
