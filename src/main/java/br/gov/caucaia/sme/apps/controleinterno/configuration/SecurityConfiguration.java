@@ -48,7 +48,7 @@ public class SecurityConfiguration {
 			
 			authConfig.requestMatchers("css/**").permitAll();
 			authConfig.requestMatchers("/js/**").permitAll();
-			authConfig.requestMatchers("/static/img/**").permitAll();
+			authConfig.requestMatchers("/img/**").permitAll();
 			
 			
 			authConfig.anyRequest().authenticated();

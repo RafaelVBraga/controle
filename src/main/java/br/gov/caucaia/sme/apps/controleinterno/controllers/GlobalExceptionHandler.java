@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public String handleException(Exception e, Model model){
 		logger.error("Erro no sistema: ",e);
-		model.addAttribute("errorMessage", "Ocorreu um erro. Por favor tente novamente mais tarde.");
+		model.addAttribute("errorMessage", "Ocorreu um erro: " +e.getMessage());
 		return "/util/error.xhtml";
 		}
 	@ModelAttribute

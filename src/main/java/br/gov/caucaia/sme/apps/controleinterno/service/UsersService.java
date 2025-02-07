@@ -50,6 +50,13 @@ public class UsersService {
 		return usersRepository.save(userToSave);
 	}
 	
+	public Users mudarSenha(Long id, String senha) {
+		Users user = usersRepository.findById(id).get();
+		BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+		user.setPassword(bcrypt.encode(senha));	
+		return usersRepository.save(user);		
+	}
+	
 	public Users saveEdition(UsuarioDto usuario, Setor setor) {
 		Users userToSave = findById(usuario.getId());				
 		

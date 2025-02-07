@@ -28,11 +28,12 @@ import br.gov.caucaia.sme.apps.controleinterno.models.Documento;
 import br.gov.caucaia.sme.apps.controleinterno.models.Secretaria;
 import br.gov.caucaia.sme.apps.controleinterno.models.Setor;
 import br.gov.caucaia.sme.apps.controleinterno.security.Users;
-import br.gov.caucaia.sme.apps.controleinterno.service.AuthoritiesService;
 import br.gov.caucaia.sme.apps.controleinterno.service.DocumentoService;
 import br.gov.caucaia.sme.apps.controleinterno.service.SecretariaService;
 import br.gov.caucaia.sme.apps.controleinterno.service.SetorService;
 import br.gov.caucaia.sme.apps.controleinterno.service.UsersService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class MainController { 
@@ -47,9 +48,6 @@ public class MainController {
 
 	@Autowired
 	private SecretariaService secretariaService;
-	
-	@Autowired 
-	private AuthoritiesService authoritiesService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(DocumentoController.class);
 
@@ -359,14 +357,29 @@ public class MainController {
 		logger.info("usuário solicitou página de perfil!");
 		return "/usuario/perfil.xhtml";
 	}
-	@PostMapping("/perfil")
-	public String mudarSenha(Model model,@Validated @ModelAttribute UsuarioDto usuario, Errors errors) {
-		logger.info("usuário solicitou alterar senha");
-		if (errors.hasErrors()) {			
-			model.addAttribute("usuario", usuario);
+	@PostMapping("/perfil/mudarSenha")
+	public String mudarSenha(@RequestParam String novaSenha, @RequestParam String confNovaSenha,
+            HttpServletRequest request, HttpServletResponse response, Model model) {
+		logger.info("usuário solicitou alterar senha");		
+		if(!novaSenha.toLowerCase().equals(confNovaSenha)) {
+			logger.info("Senha e confirmação de senha divergentes");
+			model.addAttribute("message", "Senha e confirmação precisam ser idênticas!");
+			model.addAttribute("showMessage",false);
+			model.addAttribute("usuario", UsuarioDto.fromUsers(buscarUsuario()));
 			return "/usuario/perfil.xhtml";
 		}
-		logger.info("Solicitação alterar senha com sucesso");
+		try {
+		Users user = usersService.mudarSenha(buscarUsuario().getId(), novaSenha);
+		logger.info("Solicitação alterar senha com sucesso: "+ user.getId());
+		model.addAttribute("message", "Senha alterada com sucesso!");
+		model.addAttribute("showMessage",true);
+		}catch(Exception e) {
+			logger.error("Erro alterando senha!", e);
+			model.addAttribute("message", "Erro ao alterar senha: "+ e.getMessage());
+			model.addAttribute("showMessage",false);
+		}
+		model.addAttribute("usuario", UsuarioDto.fromUsers(buscarUsuario()));
+		
 		return "/usuario/perfil.xhtml";
 	}
 	
