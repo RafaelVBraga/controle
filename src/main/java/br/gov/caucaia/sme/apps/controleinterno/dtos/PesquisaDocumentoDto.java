@@ -13,7 +13,7 @@ public class PesquisaDocumentoDto implements Serializable{/**
 	
 	private Integer numero;
 	private LocalDate data;
-	private String status;
+	private Boolean tipoDocumento;
 	private String destino;
 	private String assunto;
 

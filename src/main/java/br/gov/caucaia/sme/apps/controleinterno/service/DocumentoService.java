@@ -5,6 +5,7 @@ package br.gov.caucaia.sme.apps.controleinterno.service;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -92,8 +93,8 @@ public class DocumentoService {
 	            predicates.add(cb.equal(root.get("dataCadastro"), pesquisa.getData()));
 	        }
 
-	        if (pesquisa.getStatus() != null && !pesquisa.getStatus().isEmpty()) {
-	            predicates.add(cb.like(cb.lower(root.get("status")), "%" + pesquisa.getStatus().toLowerCase() + "%"));
+	        if (pesquisa.getTipoDocumento() != null ) {
+	            predicates.add(cb.equal(root.get("tipoDocumento"), pesquisa.getTipoDocumento()));
 	        }
 	        if (pesquisa.getDestino() != null && !pesquisa.getDestino().isEmpty()) {
 	            predicates.add(cb.like(cb.lower(root.get("destino")), "%" + pesquisa.getDestino().toLowerCase() + "%"));
@@ -110,8 +111,9 @@ public class DocumentoService {
 	public void gerarDocumento(UUID id) {
 		XWPFDocument document;
 		try {
-			FileInputStream fis = new FileInputStream("C:\\Users\\rafae\\Documents\\Docs\\templateOficio.docx");
-			document = new XWPFDocument(OPCPackage.open(fis));
+			//FileInputStream fis = new FileInputStream("C:\\Users\\rafae\\Documents\\Docs\\templateOficio.docx");
+			InputStream is = getClass().getClassLoader().getResourceAsStream("documents/templateOficio.docx");
+			document = new XWPFDocument(OPCPackage.open(is));
 			// Abre o documento .docx
 			// document = new
 			// XWPFDocument(OPCPackage.open("C:\\Users\\rafae\\Documents\\Docs\\template2.docx"));
@@ -161,7 +163,7 @@ public class DocumentoService {
 			out.close();
 
 			document.close();
-			fis.close();
+			is.close();
 		} catch (InvalidFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
