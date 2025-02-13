@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editar Arquivo Obsidian</title>
+</head>
+<body>
+    <form action="#" th:action="@{/save}" method="post">
+        <textarea th:field="*{content}" rows="20" cols="80" placeholder="Insira seu conteúdo aqui"></textarea>
+        <button type="submit">Salvar</button>
+    </form>
+</body>
+</html>
