@@ -19,6 +19,8 @@
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 						<li class="nav-item"><a class="mt-4 text-light nav-link"
 							th:href="@{/documento}">Documento</a>
+							<li class="nav-item"><a class="mt-4 text-light nav-link"
+							th:href="@{/markdown/edit}">Documento Mark</a>
 						<li sec:authorize="hasRole('ADMIN') or hasRole('DEVELOPER')"
 							class="nav-item"><a class="mt-4 text-light nav-link"
 							th:href="@{/setor}">Setor</a>

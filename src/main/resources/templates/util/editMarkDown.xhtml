@@ -4,8 +4,8 @@
     <title>Editar Arquivo Obsidian</title>
 </head>
 <body>
-    <form action="#" th:action="@{/save}" method="post">
-        <textarea th:field="*{content}" rows="20" cols="80" placeholder="Insira seu conteúdo aqui"></textarea>
+    <form th:action="@{/markdown/save}" method="post" th:object="${teste}">
+        <textarea class="form-control"th:field="*{valor}"rows="30" cols="100"></textarea>
         <button type="submit">Salvar</button>
     </form>
 </body>
