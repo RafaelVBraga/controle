@@ -8,6 +8,8 @@
 	rel="stylesheet"
 	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 	crossorigin="anonymous">
+<link rel="stylesheet" href="/webjars/editor.md/css/editormd.min.css" />
+
 
 <style>
 body {
@@ -45,7 +47,7 @@ body {
 				th:text="${setorNome}">Setor Padrão</span><span
 				th:if="${setorNome} != null" th:text="${setorNome}"></span>
 		</h1>
-		<form class="bg-azul-claro p-4 rounded"
+		<form id = "documentoForm"class="bg-azul-claro p-4 rounded"
 			th:action="@{/documento/salvar}" th:object="${documento}"
 			method="post">
 			<div
@@ -87,8 +89,8 @@ body {
 								th:value="*{numero}" class="form-control">
 						</div>
 						<div>
-							<label for="ano"><strong>Ano</strong> </label> <input
-								type="text" readonly id="ano" th:field="*{anoCadastro}"
+							<label for="ano"><strong>Ano</strong> </label> <input type="text"
+								readonly id="ano" th:field="*{anoCadastro}"
 								th:value="*{anoCadastro}" class="form-control">
 						</div>
 						<div class="form-group">
@@ -105,12 +107,12 @@ body {
 					</div>
 				</div>
 				<div class="form-group w-100 h-100">
-					<label for="assunto"><strong>Assunto:</strong></label>
-					<input id="assunto" th:field="*{assunto}" class="form-control">
+					<label for="assunto"><strong>Assunto:</strong></label> <input
+						id="assunto" th:field="*{assunto}" class="form-control">
 				</div>
-				<div class="form-group w-100 h-100">
+				<div id="editor" class="form-group w-100 h-100">
 					<label for="conteudo"><strong>Conteúdo:</strong></label>
-					<textarea id="conteudo" th:field="*{conteudo}" class="form-control"></textarea>
+					<textarea id="documentoConteudo" th:field="*{conteudo}" class="form-control"></textarea>
 				</div>
 
 				<div class="d-flex justify-content-between gap-2 w-100 ">
@@ -121,6 +123,84 @@ body {
 			</div>
 		</form>
 	</div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="/webjars/editor.md/lib/marked.min.js"></script>
+	<script src="/webjars/editor.md/lib/prettify.min.js"></script>
+	<script src="/webjars/editor.md/lib/raphael.min.js"></script>
+	<script src="/webjars/editor.md/lib/underscore.min.js"></script>
+	<script src="/webjars/editor.md/lib/sequence-diagram.min.js"></script>
+	<script src="/webjars/editor.md/lib/flowchart.min.js"></script>
+	<script src="/webjars/editor.md/lib/jquery.flowchart.min.js"></script>
+	<script src="/webjars/editor.md/editormd.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			editormd("editor", {
+				path : "/webjars/editor.md/lib/",
+				onfullscreen: function() {
+		            // Ajuste qualquer configuração adicional aqui, se necessário
+		            $('#editor').css({
+		                'max-width': '100%',
+		                'max-height': 'none' // Remover a limitação de altura ao maximizar
+		            });
+		        },
+		        onfullscreenExit: function() {
+		            // Restaurar o tamanho máximo quando sair do modo de tela cheia
+		            $('#editor').css({
+		                'max-width': '100%',
+		                'max-height': '300px' // Defina o valor que você deseja
+		            });
+		        },
+				lang: {
+		            name: "pt",
+		            description: "Editor de Markdown",
+		            toolbar: {
+		                undo: "Desfazer (Ctrl+Z)",
+		                redo: "Refazer (Ctrl+Y)",
+		                bold: "Negrito",
+		                del: "Riscar",
+		                italic: "Itálico",
+		                quote: "Citação",
+		                ucwords: "Inicial Maiúscula",
+		                uppercase: "Maiúscula",
+		                lowercase: "Minúscula",
+		                h1: "Cabeçalho 1",
+		                h2: "Cabeçalho 2",
+		                h3: "Cabeçalho 3",
+		                h4: "Cabeçalho 4",
+		                h5: "Cabeçalho 5",
+		                h6: "Cabeçalho 6",
+		                list_ul: "Lista Não Ordenada",
+		                list_ol: "Lista Ordenada",
+		                hr: "Linha Horizontal",
+		                link: "Link",
+		                image: "Imagem",
+		                code: "Código",
+		                code_block: "Bloco de Código",
+		                table: "Tabela",
+		                datetime: "Data/Hora",
+		                emoji: "Emojis",
+		                html_entities: "Entidades HTML",
+		                pagebreak: "Quebra de Página",
+		                watch: "Desabilitar Auto-Visualização",
+		                unwatch: "Habilitar Auto-Visualização",
+		                preview: "Visualizar (Shift+ESC)",
+		                fullscreen: "Tela Cheia (F11)",
+		                clear: "Limpar",
+		                search: "Buscar",
+		            
+// 		/* Subitens adicionais */
+// 						table_header : "Cabeçalhoa",
+// 						table_add_row : "Adicionar Linha",
+// 						table_add_column : "Adicionar Coluna",
+// 						table_delete_row : "Deletar Linha",
+// 						table_delete_column : "Deletar Coluna",
+// 						table_delete : "Deletar Tabela"
+					}
+				}
+			});
+		});
+	
+	</script>
 
 </body>
 

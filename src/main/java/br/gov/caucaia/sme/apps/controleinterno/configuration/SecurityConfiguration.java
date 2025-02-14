@@ -40,8 +40,11 @@ public class SecurityConfiguration {
 					"ROLE_DEVELOPER");
 			authConfig.requestMatchers(HttpMethod.POST, "/externo/**").hasAnyAuthority("ROLE_ADMIN",
 					"ROLE_DEVELOPER");
-			authConfig.requestMatchers(HttpMethod.GET,"/perfil/**").permitAll();	
+			authConfig.requestMatchers(HttpMethod.GET,"/perfil/**").permitAll();	 
 			authConfig.requestMatchers(HttpMethod.POST,"/perfil/**").permitAll();
+			
+			authConfig.requestMatchers(HttpMethod.GET,"webjars/**").permitAll();	
+			authConfig.requestMatchers(HttpMethod.POST,"webjars/**").permitAll();
 			
 			authConfig.requestMatchers(HttpMethod.GET, "/documento/**").permitAll();					
 			authConfig.requestMatchers(HttpMethod.POST, "/documento/**").permitAll();
