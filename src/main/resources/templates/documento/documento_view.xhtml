@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Minha Página</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+</head>
+<body class="is-flex is-flex-direction-column" style="min-height: 100vh">
+
+    <!-- Cabeçalho -->
+    <section class="hero is-small ">
+        <div class="hero-body is-justify-content-center is-align-items-center p-0">
+            <figure class="image" style="max-width:600px; margin:0 auto;">
+                <img th:src="@{/img/cabecalho_caucaia.png}" alt="Cabeçalho" class="is-fullwidth">
+            </figure>
+        </div>
+    </section>
+
+    <!-- Seção de conteúdo -->
+    <section class="section" style="flex-grow:1;">
+        <div class="container">
+            <div class="box">                
+                <p th:text="${conteudo}">Aqui será carregado o conteúdo dinâmico.</p>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="footer p-0">
+        <figure class="image"style=" margin:0 auto;">
+            <img th:src="@{/img/rodape_caucaia.png}" alt="Rodapé" class="is-fullwidth">
+        </figure>
+    </footer>
+
+</body>
+</html>
