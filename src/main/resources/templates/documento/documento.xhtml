@@ -95,8 +95,8 @@ body {
 						<td><span th:if="${#strings.equals(doc.status,'CRIADO')}"
 							class="btn btn-secondary text-light">Gerar Docx</span> <a
 							th:unless="${#strings.equals(doc.status,'CRIADO')}"
-							th:href="@{/documento/docx(documentoId= ${doc.id})}"
-							class="btn btn-primary">Gerar Docx</a> <a
+							th:href="@{/documento/visualizar(documentoId= ${doc.id})}"
+							class="btn btn-primary">Visualizar</a> <a
 							th:href="@{/documento/editar(documentoId= ${doc.id})}"
 							class="btn btn-primary">Editar</a></td>
 				</tbody>

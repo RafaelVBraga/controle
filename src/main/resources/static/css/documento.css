@@ -1,4 +1,74 @@
-body{
-	margin:0;
-	padding:0;
+
+/* Aplicando estilos do Bulma nos elementos Markdown */
+.content h1 {
+    @extend .title;
+    @extend .is-1;
 }
+
+.content h2 {
+    @extend .title;
+    @extend .is-2;
+}
+
+.content h3 {
+    @extend .title;
+    @extend .is-3;
+}
+
+.content h4 {
+    @extend .title;
+    @extend .is-4;
+}
+
+.content h5 {
+    @extend .title;
+    @extend .is-5;
+}
+
+.content h6 {
+    @extend .title;
+    @extend .is-6;
+}
+
+/* Estilizar parágrafos */
+.content p {
+    @extend .has-text-justified;
+    margin-bottom: 1rem;
+}
+
+/* Estilizar tabelas */
+.content table {
+    @extend .table;
+    @extend .is-striped;
+    @extend .is-bordered;
+    width: 100%;
+}
+
+.content th {
+    @extend .has-text-weight-bold;
+}
+
+.content td {
+    @extend .has-text-centered;
+}
+
+/* Listas */
+.content ul {
+    @extend .is-disc;
+}
+
+.content ol {
+    @extend .is-decimal;
+}
+
+/* Códigos */
+.content pre {
+    @extend .box;
+    background-color: #f5f5f5;
+}
+
+.content code {
+    @extend .tag;
+    background-color: #f0f0f0;
+}
+

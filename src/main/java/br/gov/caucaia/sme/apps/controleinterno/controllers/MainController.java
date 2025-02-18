@@ -145,6 +145,18 @@ public class MainController {
 
 		return "/documento/cadastroDocumento.xhtml";
 	}
+	@GetMapping("/documento/visualizar")
+	public String VisualizarDocumento(Model model, @RequestParam UUID documentoId) {
+		logger.info("Usuario solicitou página de edição de documentos");
+		DocumentoDto documento = DocumentoDto.fromDocumento(documentoService.findById(documentoId));
+		Users user = buscarUsuario();	
+
+		model.addAttribute("documento", documento);		
+		model.addAttribute("conteudo", documentoService.renderizarHtml(documento.getConteudo()));
+		model.addAttribute("setorNome", user.getSetor().getNome());
+
+		return "/documento/documento_view.xhtml";
+	}
 
 	@PostMapping("/documento/salvar")
 	public String salvarDocumento(Model model, @ModelAttribute DocumentoDto documentoDto) {

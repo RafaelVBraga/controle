@@ -2,11 +2,11 @@ package br.gov.caucaia.sme.apps.controleinterno.service;
 
 
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +15,13 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.commonmark.Extension;
+import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -171,6 +178,46 @@ public class DocumentoService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public String renderizarHtml(String markDownContent ) {
+		
+		List<Extension> extensions = Arrays.asList(TablesExtension.create());
+		Parser parser = Parser.builder().extensions(extensions).build();
+        HtmlRenderer renderer = HtmlRenderer.builder().extensions(extensions).build();
+        String htmlContent = renderer.render(parser.parse(markDownContent));
+        System.out.println(htmlContent);
+     // Corrigir o conteúdo escapado usando Jsoup para limpeza segura
+        String safeHtml = Jsoup.clean(htmlContent, Safelist.relaxed());
+        System.out.println(safeHtml);
+        // Adicionando classes CSS do Bulma dinamicamente
+        Document document = Jsoup.parse(safeHtml);
+        // Aplicando classes para cabeçalhos
+        document.select("h1").addClass("title is-1");
+        document.select("h2").addClass("title is-2");
+        document.select("h3").addClass("title is-3");
+        document.select("h4").addClass("title is-4");
+        document.select("h5").addClass("title is-5");
+        document.select("h6").addClass("title is-6");
+
+        // Aplicando classes para tabelas
+        document.select("table").addClass("table is-striped is-bordered");
+
+        // Aplicando classes para parágrafos
+        document.select("p").addClass("has-text-justified");
+
+        // Aplicando classes para listas
+        document.select("ul").addClass("is-disc");
+        document.select("ol").addClass("is-decimal");
+
+        // Aplicando classes para blocos de código
+        document.select("pre").addClass("box");
+        document.select("code").addClass("tag");
+
+        // Obter o HTML modificado
+        String styledHtml = document.body().html();
+        return styledHtml;
+ 
 	}
 	
 	
