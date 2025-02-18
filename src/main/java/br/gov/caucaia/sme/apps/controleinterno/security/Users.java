@@ -44,6 +44,8 @@ public class Users{
 	@ManyToOne
 	private Setor setor;
 	
+	private String cargo;
+	
 	
 	
 	@Singular

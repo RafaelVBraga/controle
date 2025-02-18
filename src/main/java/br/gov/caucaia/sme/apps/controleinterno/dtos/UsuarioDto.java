@@ -22,6 +22,7 @@ public class UsuarioDto implements Serializable {
 	private String matricula;
 	private String setorNome;
 	private UUID setorId;
+	private String cargo;
 	private Boolean isGerente;
 	private Boolean isSecretaria;
 	private Boolean isDeveloper;
@@ -34,6 +35,7 @@ public class UsuarioDto implements Serializable {
 		usuarioDto.setUsername(user.getUsername());
 		usuarioDto.setPassword(user.getPassword());
 		usuarioDto.setNome(user.getNome());
+		usuarioDto.setCargo(user.getCargo());
 		usuarioDto.setMatricula(user.getMatricula());
 		usuarioDto.setSetorNome(user.getSetor().getNome());
 		usuarioDto.setSetorId(user.getSetor().getId());		
@@ -73,6 +75,7 @@ public class UsuarioDto implements Serializable {
 		usuario.setId(this.id);
 		usuario.setUsername(this.username);
 		usuario.setNome(this.nome);
+		usuario.setCargo(this.cargo);
 		usuario.setMatricula(this.matricula);			
 		return usuario;
 	}

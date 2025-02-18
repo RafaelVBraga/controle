@@ -39,16 +39,16 @@ body {
 <body>
 
 	<div
-		class="d-flex flex-column justify-content-center align-items-center vh-100 w-100">
+		class="d-flex flex-column justify-content-center align-items-center vh-100 w-100 gap-5">
 		<h1 class="text-primary shadow-sm">
 			Controle Interno - <span th:text="${setor}">Setor Padrão</span>
 		</h1>
 		<div
-			class="d-flex flex-column justify-content-center align-items-center w-100">
+			class="d-flex flex-column justify-content-center align-items-center w-100 gap-5">
 			<span th:if="${error}!=null" class="text-danger" th:text="${error}">Campo
 				necessário</span>
 		</div>
-		<form class="bg-azul-claro p-4 rounded"
+		<form class="bg-azul-claro p-4 rounded gap-4"
 			th:action="${usuario.id}==null?@{/usuario/salvar}:@{/usuario/editar}"
 			th:object="${usuario}" method="post">
 			<div
@@ -58,20 +58,29 @@ body {
 						<input type="text" id="id" th:field="*{id}" class="form-control">
 					</div>
 					<div class="form-group ">
-						<label for="nome">Login</label> <input type="text" id="nome"
+						<label for="login">Login</label> 
+						<input type="text" id="login"
 							th:field="*{username}" th:value="*{username}"
 							class="form-control">
 						<div class="form-group ">
 							<label for="nome">Nome</label> <input type="text" id="nome"
 								th:field="*{nome}" class="form-control">
-						</div>
+						</div>						
+					</div>
+					<div class="form-group">					
+						
 
 						<div class="form-group">
 							<label for="matricula">Matrícula</label> <input type="text"
 								id="matricula" th:field="*{matricula}" class="form-control">
 						</div>
+						<div class="form-group ">
+							<label for="cargo">Cargo</label> <input type="text" id="cargo"
+								th:field="*{cargo}" class="form-control">
+						</div>
+					
 					</div>
-					<div class="form-group justify-content-between">
+					<div class="form-group">
 						<label>Setores <span th:if="${#arrays.isEmpty(setores)}">Sem
 								informações</span></label> <select class="form-select" id="select_set"
 							th:field="*{setorId}" th:unless="${#arrays.isEmpty(setores)}"
@@ -80,9 +89,10 @@ body {
 								th:text="${setr.nome}">
 						</select>
 					</div>
+					
 
 				</div>
-				<div class="d-flex justify-content-between w-100 gap-4">
+				<div class="d-flex justify-content-center w-100 gap-5">
 
 					<div class="form-check form-switch d-flex flex-column">
 						<label class="form-check-label" for="checkGerencial"><input
