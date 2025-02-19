@@ -46,10 +46,10 @@ body {
 					<p th:text="${message}">Mensagem padrão!</p>
 			</div>
 			
-			<form th:action="@{/perfil/mudarSenha}"class="container d-flex justify-content-center align-items-center gap-3">
+			<form th:action="@{/perfil/mudarSenha}" th:object="${passDto}"class="container d-flex justify-content-center align-items-center gap-3" method="post">
 			
-				<label class="">Nova senha:<input type ="password" class="form-control"></label>
-				<label class="">Confirmar nova senha:<input type ="password" class="form-control"></label>
+				<label class="">Nova senha:<input th:field ="*{senha}"type ="password" class="form-control"></label>
+				<label class="">Confirmar nova senha:<input th:field="*{confirmacao}" type ="password" class="form-control"></label>
 				<input class="btn btn-primary mt-4"type="submit" value="Salvar">
 				<br>	
 			

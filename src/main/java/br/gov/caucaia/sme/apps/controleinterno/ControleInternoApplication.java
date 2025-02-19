@@ -10,7 +10,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 @SpringBootApplication
-@EnableScheduling
+//@EnableScheduling
 public class ControleInternoApplication {
 
 	public static void main(String[] args) {

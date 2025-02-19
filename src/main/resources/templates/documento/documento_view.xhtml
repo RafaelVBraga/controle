@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Minha Página</title>
+    <title>Controle Inter SME</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
      <!-- Highlight.js para formatação de código -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
@@ -14,7 +14,7 @@
 <body class="is-flex is-flex-direction-column" style="min-height: 100vh">
 
     <!-- Cabeçalho -->
-    <section class="hero is-small ">
+    <section class="header hero is-small ">
         <div class="hero-body is-justify-content-center is-align-items-center p-0">
             <figure class="image" style="max-width:600px; margin:0 auto;">
                 <img th:src="@{/img/cabecalho_caucaia.png}" alt="Cabeçalho" class="is-fullwidth">
@@ -24,9 +24,33 @@
     </section>
 
     <!-- Seção de conteúdo -->
-    <section class="section" style="flex-grow:1;">
+    <section class="section content" style="flex-grow:1;">
+        <div class="container is-flex is-justify-content-space-between">
+        	
+        	
+        	<div class="container is-flex is-flex-direction-row">
+        			<p th:text="${documento.tipoDocumento}?'Ofício -':'C.I -'"></p>
+        				<span th:text="${documento.numero}"></span>
+        		    /<span th:text="${documento.anoCadastro}"></span>
+        	</div>	   	        	
+        	
+        	<div class="is-flex is-flex-direction-row">
+        	<span>Caucaia, </span>
+        			<span th:text="${documento.dataCadastro}"></span>
+        				
+        	</div>   	
+        	
+        </div>
+        <br>
+        <div class="container is-flex is-flex-direction-column">
+        		<p>A(o) Sr(a).</p>
+        		<p th:text="${destinatario.nome}"></p>
+        		<p th:text="${destinatario.cargo}"></p>
+        		<p th:text="${destinatario.setor.nome}"></p>       
+        	
+        	</div>
         
-        <div class="is-flex is-flex-direction-column is-justify-content-center">                
+        <div class="container is-flex is-flex-direction-column is-justify-content-center">                
                 <p th:utext="${conteudo}">Aqui será carregado o conteúdo dinâmico.</p>                
             </div>
     </section>

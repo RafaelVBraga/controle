@@ -11,5 +11,6 @@ import br.gov.caucaia.sme.apps.controleinterno.security.Users;
 public interface UsersRepository extends JpaRepository<Users, Long>{
 	Optional<Users> findByUsername(String username); 
 	List<Users> findAll();	
+	Users findByCargoAndSetorNome(String cargo, String setor);
 	
 }

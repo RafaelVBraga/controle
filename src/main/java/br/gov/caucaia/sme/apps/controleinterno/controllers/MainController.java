@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.gov.caucaia.sme.apps.controleinterno.dtos.DocumentoDto;
+import br.gov.caucaia.sme.apps.controleinterno.dtos.PassDto;
 import br.gov.caucaia.sme.apps.controleinterno.dtos.PesquisaDocumentoDto;
 import br.gov.caucaia.sme.apps.controleinterno.dtos.PesquisaSetorDto;
 import br.gov.caucaia.sme.apps.controleinterno.dtos.UsuarioDto;
@@ -154,6 +155,7 @@ public class MainController {
 		model.addAttribute("documento", documento);		
 		model.addAttribute("conteudo", documentoService.renderizarHtml(documento.getConteudo()));
 		model.addAttribute("setorNome", user.getSetor().getNome());
+		model.addAttribute("destinatario", usersService.findByCargoAndSetor("Gerente",documento.getDestino()));
 
 		return "/documento/documento_view.xhtml";
 	}
@@ -322,9 +324,9 @@ public class MainController {
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
 		}
-		
+		Setor setor = setorService.findById(usuario.getSetorId());
 		try {			
-			usersService.save(usuario,user.getSetor());
+			usersService.save(usuario,setor);
 			logger.info("Sucesso salvando usuário!");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -342,7 +344,7 @@ public class MainController {
 		logger.info("Usuário solcitou editar usuario");
 		Users user = buscarUsuario();	
 		if (errors.hasErrors()) {
-			logger.error("Erro de validação solicitação de editar usuario: ", errors);		
+			logger.error("Erro de validação na solicitação de editar usuario: ", errors);		
 			model.addAttribute("setor", user.getSetor().getNome());
 			model.addAttribute("usuario", usuario);
 			return "/usuario/cadastroUsuario.xhtml";
@@ -366,14 +368,15 @@ public class MainController {
 	@GetMapping("/perfil")
 	public String perfil(Model model) {
 		model.addAttribute("usuario", UsuarioDto.fromUsers(buscarUsuario()));
+		model.addAttribute("passDto", new PassDto());
 		logger.info("usuário solicitou página de perfil!");
 		return "/usuario/perfil.xhtml";
 	}
 	@PostMapping("/perfil/mudarSenha")
-	public String mudarSenha(@RequestParam String novaSenha, @RequestParam String confNovaSenha,
+	public String mudarSenha(@ModelAttribute PassDto pass,
             HttpServletRequest request, HttpServletResponse response, Model model) {
 		logger.info("usuário solicitou alterar senha");		
-		if(!novaSenha.toLowerCase().equals(confNovaSenha)) {
+		if(!pass.getSenha().toLowerCase().equals(pass.getConfirmacao())) {
 			logger.info("Senha e confirmação de senha divergentes");
 			model.addAttribute("message", "Senha e confirmação precisam ser idênticas!");
 			model.addAttribute("showMessage",false);
@@ -381,7 +384,7 @@ public class MainController {
 			return "/usuario/perfil.xhtml";
 		}
 		try {
-		Users user = usersService.mudarSenha(buscarUsuario().getId(), novaSenha);
+		Users user = usersService.mudarSenha(buscarUsuario().getId(), pass.getSenha());
 		logger.info("Solicitação alterar senha com sucesso: "+ user.getId());
 		model.addAttribute("message", "Senha alterada com sucesso!");
 		model.addAttribute("showMessage",true);

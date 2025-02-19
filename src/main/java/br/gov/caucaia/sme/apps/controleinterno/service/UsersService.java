@@ -59,7 +59,9 @@ public class UsersService {
 	
 	public Users saveEdition(UsuarioDto usuario, Setor setor) {
 		Users userToSave = findById(usuario.getId());				
-		
+		userToSave.setNome(usuario.getNome());
+		userToSave.setMatricula(usuario.getMatricula());
+		userToSave.setCargo(usuario.getCargo());		
 		userToSave.setSetor(setor);
 		Set<Authorities> authorities = new HashSet<Authorities>();
 		
@@ -99,6 +101,10 @@ public class UsersService {
 	}
 	public void delete(Long id) {
 		usersRepository.deleteById(id);
+	}
+	
+	public Users findByCargoAndSetor(String cargo, String setor) {
+		return usersRepository.findByCargoAndSetorNome(cargo, setor);
 	}
 	
 

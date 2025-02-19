@@ -71,4 +71,81 @@
     @extend .tag;
     background-color: #f0f0f0;
 }
+body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Cabeçalho fixo */
+        .header, .footer {
+            position: relative ;
+            width: 100%;
+            text-align: center;
+            background-color: #f5f5f5;
+            padding: 10px 0;
+        }
+
+        .header {
+            top: 0;
+        }
+
+        .footer {
+            bottom: 0;
+        }
+
+        /* Ajustar a área de conteúdo para não sobrepor o cabeçalho e rodapé */
+        .content {
+            margin-top: 100px; /* Altura do cabeçalho */
+            margin-bottom: 80px; /* Altura do rodapé */
+            padding: 20px;
+        }
+
+        /* Estilos para impressão */
+        @media print {
+          @page {
+                size: A4;
+                margin: 2cm 2cm 2cm 2cm; /* Margens para o cabeçalho e rodapé */
+            }
+
+            /* Criando um cabeçalho e rodapé que se repetem a cada página */
+            .header, .footer {
+                position: relative;               
+                text-align: center;
+                background-color: #f5f5f5;
+                padding: 10px 0;
+                display: table;
+                width: 100%;
+            }
+
+            .header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2.5cm;
+            }
+
+            .footer {
+               position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 2.5cm;
+            }
+
+            /* Ajuste para o conteúdo não sobrepor o cabeçalho e rodapé */
+            .content {
+                position: relative;
+                margin-top: 4cm;
+                margin-bottom: 4cm;
+                page-break-after: auto;
+                page-break-before: auto;
+            }
+
+            /* Evitar que tabelas e pre quebrem no meio */
+            table, pre {
+                page-break-inside: avoid;
+            }
+        }
 

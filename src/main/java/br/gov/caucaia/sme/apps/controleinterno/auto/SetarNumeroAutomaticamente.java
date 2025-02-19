@@ -13,7 +13,7 @@ import br.gov.caucaia.sme.apps.controleinterno.models.Documento;
 import br.gov.caucaia.sme.apps.controleinterno.service.DocumentoService;
 import br.gov.caucaia.sme.apps.controleinterno.service.SetorService;
 
-@Component
+// @Component
 public class SetarNumeroAutomaticamente {
 	@Autowired
 	public DocumentoService docService;
